@@ -44,10 +44,14 @@ const App: React.FC = () => {
   const [shareBtnText, setShareBtnText] = useState("Compartilhar");
   const [isSharing, setIsSharing] = useState(false);
 
-  // Configuração da API de Contador Gratuita (Pública - Não requer Token)
-  const COUNTER_NAMESPACE = 'tedabliukk-linkbio';
-  const COUNTER_KEY = 'likes_global_v1';
-  const API_URL = `https://api.counterapi.dev/v1/${COUNTER_NAMESPACE}/${COUNTER_KEY}`;
+  // CONFIGURAÇÃO DO CONTADOR (COUNTERAPI)
+  // Namespace baseado no workspace fornecido: "Davi Passos's Workspace" -> Slugify
+  const NAMESPACE = 'davi-passos-workspace';
+  // Key fornecida pelo usuário
+  const KEY = 'ut_ENIMOBprfe6uD2mo1LsUn2LKMDbLQv84IoXvHSXd';
+  
+  // URL Base da API (Replicando a lógica da lib 'counterapi')
+  const API_BASE = `https://api.counterapi.dev/v1/${NAMESPACE}/${KEY}`;
 
   useEffect(() => {
     // 1. Verifica se o usuário já deu like localmente
@@ -56,47 +60,42 @@ const App: React.FC = () => {
       setHasLiked(true);
     }
 
-    // 2. Busca o total de likes global da API
-    const fetchGlobalLikes = async () => {
+    // 2. Busca o total de likes da API
+    const fetchLikes = async () => {
       try {
-        const res = await fetch(API_URL);
+        // GET simples retorna a contagem atual
+        const res = await fetch(API_BASE);
         if (res.ok) {
           const data = await res.json();
           if (typeof data.count === 'number') {
             setLikes(data.count);
           }
         } else {
-          // Se der 404, significa que o contador ainda não foi criado na API.
-          // Ele será criado automaticamente no primeiro like.
-          // Ignoramos silenciosamente.
+          console.warn("Contador ainda não inicializado ou erro na API.");
         }
       } catch (error) {
-        // Erro de rede ou bloqueado por AdBlock.
-        // Falha silenciosamente para não atrapalhar o usuário.
-        // console.warn("API de likes indisponível (possível AdBlock).");
+        console.error("Erro ao conectar com counterapi:", error);
       } finally {
         setIsLoadingLikes(false);
       }
     };
 
-    fetchGlobalLikes();
-  }, []);
+    fetchLikes();
+  }, [API_BASE]);
 
   const handleLike = async () => {
     if (hasLiked) return;
 
-    // Atualização Otimista (Atualiza a UI antes da resposta do servidor)
+    // Atualização Otimista
     setHasLiked(true);
     setLikes(prev => prev + 1);
     localStorage.setItem('profile_liked', 'true');
 
     try {
-      // Envia o incremento para a API global (/up incrementa e retorna o novo valor)
-      // Se o contador não existir, essa chamada cria ele.
-      await fetch(`${API_URL}/up`);
+      // Endpoint /up incrementa o contador
+      await fetch(`${API_BASE}/up`);
     } catch (error) {
-      // Se falhar (AdBlock/Offline), o like conta apenas localmente na sessão do usuário
-      // Não exibimos erro para manter a experiência fluida
+      console.error("Falha ao incrementar like:", error);
     }
   };
 
@@ -123,14 +122,11 @@ const App: React.FC = () => {
 
     try {
       if (navigator.share) {
-        // Tenta usar o compartilhamento nativo do celular
         await navigator.share(shareData);
       } else {
-        // Se não suportar (PC), copia
         await copyToClipboard();
       }
     } catch (error: any) {
-      // Se o usuário cancelar ou der erro, fazemos fallback para copiar
       if (error.name !== 'AbortError') {
          await copyToClipboard();
       }
