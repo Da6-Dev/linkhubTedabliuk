@@ -4,7 +4,6 @@ import { UserProfile, SocialLink } from './types';
 import LinkCard from './components/LinkCard';
 import DiscordWidget from './components/DiscordWidget';
 import { ShareIcon, DownloadIcon, CopyIcon } from './components/Icons';
-import { scrapeInstagram, scrapeTikTok, scrapeYoutube } from './services/scraperService';
 
 // Bio Options for Rotation
 const BIO_OPTIONS = [
@@ -30,7 +29,7 @@ const INITIAL_SOCIAL_LINKS: SocialLink[] = [
     url: 'https://www.youtube.com/@TeDabliukk', 
     icon: 'youtube', 
     colorClass: 'red-600',
-    followers: 'Ver Canal' // Valor padrão elegante (sem "Carregando...")
+    cta: 'Vídeos épicos e Tutoriais! 🎬'
   },
   { 
     id: '1', 
@@ -38,7 +37,7 @@ const INITIAL_SOCIAL_LINKS: SocialLink[] = [
     url: 'https://www.instagram.com/davi_psss/', 
     icon: 'instagram', 
     colorClass: 'pink-600',
-    followers: 'Ver Perfil' // Valor padrão elegante
+    cta: 'Bastidores e fotos exclusivas 📸'
   },
   { 
     id: '2', 
@@ -46,7 +45,7 @@ const INITIAL_SOCIAL_LINKS: SocialLink[] = [
     url: 'https://www.tiktok.com/@tedabliu.kk', 
     icon: 'tiktok', 
     colorClass: 'black',
-    followers: 'Ver Perfil' // Valor padrão elegante
+    cta: 'Vídeos Curtos da Nossa Série! 🤣'
   },
 ];
 
@@ -56,20 +55,22 @@ const DOWNLOAD_LINKS: SocialLink[] = [
     title: 'Baixar Mundo (Bedrock)', 
     url: 'https://drive.google.com/file/d/1gJu1o0ZlwIfN2z6NbQc2fYwJd3yWc_jD/view?usp=sharing', 
     icon: 'download', 
-    colorClass: 'emerald-600' // Green for Bedrock
+    colorClass: 'emerald-600',
+    cta: 'Versão para Celular/Console'
   },
   { 
     id: '5', 
     title: 'Baixar Mundo (Java)', 
     url: 'https://drive.google.com/file/d/1PJ6VMg4SPUI1s8emKCJU7c2z4b8G3LBD/view?usp=drive_link', 
     icon: 'download', 
-    colorClass: 'indigo-600' // Blue/Indigo for Java
+    colorClass: 'indigo-600',
+    cta: 'Versão para PC'
   },
 ];
 
 const App: React.FC = () => {
   const [profile, setProfile] = useState<UserProfile>(INITIAL_PROFILE);
-  const [socialLinks, setSocialLinks] = useState<SocialLink[]>(INITIAL_SOCIAL_LINKS);
+  const [socialLinks] = useState<SocialLink[]>(INITIAL_SOCIAL_LINKS);
   const [shareBtnText, setShareBtnText] = useState("Compartilhar");
   const [isSharing, setIsSharing] = useState(false);
 
@@ -77,37 +78,6 @@ const App: React.FC = () => {
   useEffect(() => {
     const randomIndex = Math.floor(Math.random() * BIO_OPTIONS.length);
     setProfile(prev => ({ ...prev, bio: BIO_OPTIONS[randomIndex] }));
-  }, []);
-
-  // Scraping Logic
-  useEffect(() => {
-    const fetchFollowers = async () => {
-      // YouTube
-      const ytSubs = await scrapeYoutube('@TeDabliukk');
-      if (ytSubs) {
-        setSocialLinks(prev => prev.map(link => 
-          link.id === '3' ? { ...link, followers: ytSubs } : link
-        ));
-      }
-
-      // Instagram
-      const instaFollowers = await scrapeInstagram('davi_psss');
-      if (instaFollowers) {
-        setSocialLinks(prev => prev.map(link => 
-          link.id === '1' ? { ...link, followers: instaFollowers } : link
-        ));
-      }
-
-      // TikTok
-      const tiktokFollowers = await scrapeTikTok('tedabliu.kk');
-      if (tiktokFollowers) {
-        setSocialLinks(prev => prev.map(link => 
-          link.id === '2' ? { ...link, followers: tiktokFollowers } : link
-        ));
-      }
-    };
-
-    fetchFollowers();
   }, []);
 
   const shareProfile = async () => {

@@ -1,10 +1,11 @@
+
 export interface SocialLink {
   id: string;
   title: string;
   url: string;
   icon: 'instagram' | 'tiktok' | 'youtube' | 'discord' | 'twitter' | 'download' | 'generic';
   colorClass: string;
-  followers?: string;
+  cta?: string; // Call to Action text instead of follower count
 }
 
 export interface UserProfile {
