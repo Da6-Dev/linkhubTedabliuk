@@ -44,7 +44,7 @@ const App: React.FC = () => {
   const [shareBtnText, setShareBtnText] = useState("Compartilhar");
   const [isSharing, setIsSharing] = useState(false);
 
-  // Configuração da API de Contador Gratuita
+  // Configuração da API de Contador Gratuita (Pública - Não requer Token)
   const COUNTER_NAMESPACE = 'tedabliukk-linkbio';
   const COUNTER_KEY = 'likes_global_v1';
   const API_URL = `https://api.counterapi.dev/v1/${COUNTER_NAMESPACE}/${COUNTER_KEY}`;
@@ -66,11 +66,14 @@ const App: React.FC = () => {
             setLikes(data.count);
           }
         } else {
-          // Se der 404 (ainda não criado), assume 0
-          console.log("Contador ainda não iniciado ou erro na API");
+          // Se der 404, significa que o contador ainda não foi criado na API.
+          // Ele será criado automaticamente no primeiro like.
+          // Ignoramos silenciosamente.
         }
       } catch (error) {
-        console.error("Erro ao carregar likes:", error);
+        // Erro de rede ou bloqueado por AdBlock.
+        // Falha silenciosamente para não atrapalhar o usuário.
+        // console.warn("API de likes indisponível (possível AdBlock).");
       } finally {
         setIsLoadingLikes(false);
       }
@@ -89,10 +92,11 @@ const App: React.FC = () => {
 
     try {
       // Envia o incremento para a API global (/up incrementa e retorna o novo valor)
+      // Se o contador não existir, essa chamada cria ele.
       await fetch(`${API_URL}/up`);
     } catch (error) {
-      console.error("Erro ao salvar like globalmente:", error);
-      // Não revertemos a UI para não confundir o usuário, mas logamos o erro
+      // Se falhar (AdBlock/Offline), o like conta apenas localmente na sessão do usuário
+      // Não exibimos erro para manter a experiência fluida
     }
   };
 
@@ -119,11 +123,14 @@ const App: React.FC = () => {
 
     try {
       if (navigator.share) {
+        // Tenta usar o compartilhamento nativo do celular
         await navigator.share(shareData);
       } else {
+        // Se não suportar (PC), copia
         await copyToClipboard();
       }
     } catch (error: any) {
+      // Se o usuário cancelar ou der erro, fazemos fallback para copiar
       if (error.name !== 'AbortError') {
          await copyToClipboard();
       }
