@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Counter } from 'counterapi';
 import { UserProfile, SocialLink } from './types';
 import LinkCard from './components/LinkCard';
 import DiscordWidget from './components/DiscordWidget';
@@ -25,16 +26,23 @@ const DOWNLOAD_LINKS: SocialLink[] = [
     title: 'Baixar Mundo (Bedrock)', 
     url: 'https://drive.google.com/file/d/1gJu1o0ZlwIfN2z6NbQc2fYwJd3yWc_jD/view?usp=sharing', 
     icon: 'download', 
-    colorClass: 'emerald-600' // Green for Bedrock
+    colorClass: 'emerald-600' 
   },
   { 
     id: '5', 
     title: 'Baixar Mundo (Java)', 
     url: 'https://drive.google.com/file/d/1PJ6VMg4SPUI1s8emKCJU7c2z4b8G3LBD/view?usp=drive_link', 
     icon: 'download', 
-    colorClass: 'indigo-600' // Blue/Indigo for Java
+    colorClass: 'indigo-600'
   },
 ];
+
+// Configuração da CounterAPI
+const counter = new Counter({
+  workspace: 'davi-passos-workspace', // Seu namespace atual
+});
+// ID do contador (baseado na URL que você forneceu anteriormente)
+const COUNTER_ID = 'ut_ENIMOBprfe6uD2mo1LsUn2LKMDbLQv84IoXvHSXd';
 
 const App: React.FC = () => {
   const [profile] = useState<UserProfile>(INITIAL_PROFILE);
@@ -44,15 +52,6 @@ const App: React.FC = () => {
   const [shareBtnText, setShareBtnText] = useState("Compartilhar");
   const [isSharing, setIsSharing] = useState(false);
 
-  // CONFIGURAÇÃO DO CONTADOR (COUNTERAPI)
-  // Namespace baseado no workspace fornecido: "Davi Passos's Workspace" -> Slugify
-  const NAMESPACE = 'davi-passos-workspace';
-  // Key fornecida pelo usuário
-  const KEY = 'ut_ENIMOBprfe6uD2mo1LsUn2LKMDbLQv84IoXvHSXd';
-  
-  // URL Base da API (Replicando a lógica da lib 'counterapi')
-  const API_BASE = `https://api.counterapi.dev/v1/${NAMESPACE}/${KEY}`;
-
   useEffect(() => {
     // 1. Verifica se o usuário já deu like localmente
     const savedLike = localStorage.getItem('profile_liked');
@@ -60,28 +59,22 @@ const App: React.FC = () => {
       setHasLiked(true);
     }
 
-    // 2. Busca o total de likes da API
+    // 2. Busca o total de likes usando a lib
     const fetchLikes = async () => {
       try {
-        // GET simples retorna a contagem atual
-        const res = await fetch(API_BASE);
-        if (res.ok) {
-          const data = await res.json();
-          if (typeof data.count === 'number') {
-            setLikes(data.count);
-          }
-        } else {
-          console.warn("Contador ainda não inicializado ou erro na API.");
+        const response = await counter.get(COUNTER_ID);
+        if (response && typeof response.value === 'number') {
+          setLikes(response.value);
         }
       } catch (error) {
-        console.error("Erro ao conectar com counterapi:", error);
+        console.error("Erro ao carregar likes:", error);
       } finally {
         setIsLoadingLikes(false);
       }
     };
 
     fetchLikes();
-  }, [API_BASE]);
+  }, []);
 
   const handleLike = async () => {
     if (hasLiked) return;
@@ -92,8 +85,8 @@ const App: React.FC = () => {
     localStorage.setItem('profile_liked', 'true');
 
     try {
-      // Endpoint /up incrementa o contador
-      await fetch(`${API_BASE}/up`);
+      // Incrementa o contador usando a lib
+      await counter.up(COUNTER_ID);
     } catch (error) {
       console.error("Falha ao incrementar like:", error);
     }
