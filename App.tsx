@@ -30,7 +30,7 @@ const INITIAL_SOCIAL_LINKS: SocialLink[] = [
     url: 'https://www.youtube.com/@TeDabliukk', 
     icon: 'youtube', 
     colorClass: 'red-600',
-    followers: 'Carregando...' // Placeholder
+    followers: 'Ver Canal' // Valor padrão elegante (sem "Carregando...")
   },
   { 
     id: '1', 
@@ -38,7 +38,7 @@ const INITIAL_SOCIAL_LINKS: SocialLink[] = [
     url: 'https://www.instagram.com/davi_psss/', 
     icon: 'instagram', 
     colorClass: 'pink-600',
-    followers: 'Carregando...' // Placeholder
+    followers: 'Ver Perfil' // Valor padrão elegante
   },
   { 
     id: '2', 
@@ -46,7 +46,7 @@ const INITIAL_SOCIAL_LINKS: SocialLink[] = [
     url: 'https://www.tiktok.com/@tedabliu.kk', 
     icon: 'tiktok', 
     colorClass: 'black',
-    followers: 'Carregando...' // Placeholder
+    followers: 'Ver Perfil' // Valor padrão elegante
   },
 ];
 
@@ -88,11 +88,6 @@ const App: React.FC = () => {
         setSocialLinks(prev => prev.map(link => 
           link.id === '3' ? { ...link, followers: ytSubs } : link
         ));
-      } else {
-        // Fallback manual se falhar
-        setSocialLinks(prev => prev.map(link => 
-          link.id === '3' ? { ...link, followers: 'Ver Canal' } : link
-        ));
       }
 
       // Instagram
@@ -101,10 +96,6 @@ const App: React.FC = () => {
         setSocialLinks(prev => prev.map(link => 
           link.id === '1' ? { ...link, followers: instaFollowers } : link
         ));
-      } else {
-         setSocialLinks(prev => prev.map(link => 
-          link.id === '1' ? { ...link, followers: 'Ver Perfil' } : link
-        ));
       }
 
       // TikTok
@@ -112,10 +103,6 @@ const App: React.FC = () => {
       if (tiktokFollowers) {
         setSocialLinks(prev => prev.map(link => 
           link.id === '2' ? { ...link, followers: tiktokFollowers } : link
-        ));
-      } else {
-        setSocialLinks(prev => prev.map(link => 
-          link.id === '2' ? { ...link, followers: 'Ver Perfil' } : link
         ));
       }
     };
@@ -151,6 +138,7 @@ const App: React.FC = () => {
         await copyToClipboard();
       }
     } catch (error: any) {
+      // Fallback silencioso
       await copyToClipboard();
     } finally {
       setIsSharing(false);
