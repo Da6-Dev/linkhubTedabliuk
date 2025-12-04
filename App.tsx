@@ -38,24 +38,62 @@ const DOWNLOAD_LINKS: SocialLink[] = [
 
 const App: React.FC = () => {
   const [profile] = useState<UserProfile>(INITIAL_PROFILE);
-  const [likes, setLikes] = useState(0);
+  const [likes, setLikes] = useState<number>(0);
   const [hasLiked, setHasLiked] = useState(false);
+  const [isLoadingLikes, setIsLoadingLikes] = useState(true);
   const [shareBtnText, setShareBtnText] = useState("Compartilhar");
   const [isSharing, setIsSharing] = useState(false);
 
+  // Configuração da API de Contador Gratuita
+  const COUNTER_NAMESPACE = 'tedabliukk-linkbio';
+  const COUNTER_KEY = 'likes_global_v1';
+  const API_URL = `https://api.counterapi.dev/v1/${COUNTER_NAMESPACE}/${COUNTER_KEY}`;
+
   useEffect(() => {
+    // 1. Verifica se o usuário já deu like localmente
     const savedLike = localStorage.getItem('profile_liked');
     if (savedLike === 'true') {
       setHasLiked(true);
-      setLikes(prev => prev + 1);
     }
+
+    // 2. Busca o total de likes global da API
+    const fetchGlobalLikes = async () => {
+      try {
+        const res = await fetch(API_URL);
+        if (res.ok) {
+          const data = await res.json();
+          if (typeof data.count === 'number') {
+            setLikes(data.count);
+          }
+        } else {
+          // Se der 404 (ainda não criado), assume 0
+          console.log("Contador ainda não iniciado ou erro na API");
+        }
+      } catch (error) {
+        console.error("Erro ao carregar likes:", error);
+      } finally {
+        setIsLoadingLikes(false);
+      }
+    };
+
+    fetchGlobalLikes();
   }, []);
 
-  const handleLike = () => {
+  const handleLike = async () => {
     if (hasLiked) return;
+
+    // Atualização Otimista (Atualiza a UI antes da resposta do servidor)
     setHasLiked(true);
     setLikes(prev => prev + 1);
     localStorage.setItem('profile_liked', 'true');
+
+    try {
+      // Envia o incremento para a API global (/up incrementa e retorna o novo valor)
+      await fetch(`${API_URL}/up`);
+    } catch (error) {
+      console.error("Erro ao salvar like globalmente:", error);
+      // Não revertemos a UI para não confundir o usuário, mas logamos o erro
+    }
   };
 
   const shareProfile = async () => {
@@ -68,7 +106,6 @@ const App: React.FC = () => {
       url: window.location.href,
     };
 
-    // Função auxiliar para copiar
     const copyToClipboard = async () => {
       try {
         await navigator.clipboard.writeText(window.location.href);
@@ -81,16 +118,12 @@ const App: React.FC = () => {
     };
 
     try {
-      // Tenta compartilhamento nativo primeiro (Mobile)
       if (navigator.share) {
         await navigator.share(shareData);
-        // Se der certo, não faz nada
       } else {
-        // Se não suportar (Desktop), vai pro clipboard
         await copyToClipboard();
       }
     } catch (error: any) {
-      // Se o usuário cancelar ou der erro no share nativo, faz fallback pro copy
       if (error.name !== 'AbortError') {
          await copyToClipboard();
       }
@@ -139,21 +172,24 @@ const App: React.FC = () => {
           <div className="flex items-center gap-3 mb-8">
              <button 
               onClick={handleLike}
+              disabled={hasLiked}
               className={`
-                flex items-center gap-2 px-5 py-2.5 rounded-full border transition-all duration-300 shadow-sm
+                flex items-center gap-2 px-6 py-2.5 rounded-full border transition-all duration-300 shadow-sm group
                 ${hasLiked 
-                  ? 'bg-rose-50 border-rose-200 text-rose-500' 
-                  : 'bg-white border-slate-200 text-slate-600 hover:scale-105 hover:border-rose-200 hover:text-rose-500'}
+                  ? 'bg-rose-50 border-rose-200 text-rose-500 cursor-default' 
+                  : 'bg-white border-slate-200 text-slate-600 hover:scale-105 hover:border-rose-200 hover:text-rose-500 active:scale-95 cursor-pointer'}
               `}
             >
-              <HeartIcon className={`w-5 h-5 ${hasLiked ? 'fill-current' : ''}`} />
-              <span className="font-bold text-sm">{likes}</span>
+              <HeartIcon className={`w-5 h-5 transition-transform duration-300 ${hasLiked ? 'fill-current scale-110' : 'group-hover:scale-110'}`} />
+              <span className="font-bold text-sm">
+                {isLoadingLikes ? '...' : likes}
+              </span>
             </button>
             
             <button 
               onClick={shareProfile}
               className={`
-                flex items-center gap-2 px-5 py-2.5 rounded-full border shadow-md transition-all duration-300
+                flex items-center gap-2 px-6 py-2.5 rounded-full border shadow-md transition-all duration-300
                 ${shareBtnText === 'Copiado!' 
                   ? 'bg-green-500 border-green-500 text-white' 
                   : 'bg-slate-900 border-slate-900 text-white hover:bg-slate-800 hover:scale-105'}
@@ -203,7 +239,7 @@ const App: React.FC = () => {
         <div className="w-full">
           <DiscordWidget 
             serverId="1334855536700686388" 
-            inviteUrl="https://discord.gg/tedabliukk" 
+            inviteUrl="https://discord.gg/W9MmqNgEBP" 
             customIconUrl={profile.avatarUrl}
           />
         </div>
