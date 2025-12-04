@@ -89,14 +89,24 @@ const LinkCard: React.FC<LinkCardProps> = ({ link, variant = 'list', className =
           {link.title}
         </span>
         
-        {variant === 'featured' && (
+        {/* Followers / Subtext */}
+        {link.followers && (
+          <span className={`
+            block text-slate-500 font-medium
+            ${variant === 'featured' ? 'text-base mt-1' : 'text-xs mt-0.5'}
+          `}>
+            {link.followers}
+          </span>
+        )}
+        
+        {variant === 'featured' && !link.followers && (
           <span className="text-sm text-slate-500 font-medium mt-1 flex items-center gap-1">
             Ver canal <span className="group-hover:translate-x-1 transition-transform">→</span>
           </span>
         )}
       </div>
 
-      {/* Copy Button (only for list view primarily, but available for others via hover) */}
+      {/* Copy Button */}
       <button 
         onClick={handleCopy}
         className={`

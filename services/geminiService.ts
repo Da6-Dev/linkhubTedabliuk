@@ -1,14 +1,6 @@
 import { GoogleGenAI } from "@google/genai";
 
-// Atualizado para usar import.meta.env (Padrão Vite)
-// NOTA: Renomeie sua chave no arquivo .env para VITE_GEMINI_API_KEY
-const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-
-if (!apiKey) {
-  console.error("ERRO: VITE_GEMINI_API_KEY não encontrada nas variáveis de ambiente.");
-}
-
-const ai = new GoogleGenAI({ apiKey: apiKey || '' });
+const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 export const generateBio = async (keywords: string, tone: string): Promise<string> => {
   try {

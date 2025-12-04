@@ -4,6 +4,7 @@ export interface SocialLink {
   url: string;
   icon: 'instagram' | 'tiktok' | 'youtube' | 'discord' | 'twitter' | 'download' | 'generic';
   colorClass: string;
+  followers?: string;
 }
 
 export interface UserProfile {

@@ -1,23 +1,53 @@
+
 import React, { useState, useEffect } from 'react';
-import { Counter } from 'counterapi';
 import { UserProfile, SocialLink } from './types';
 import LinkCard from './components/LinkCard';
 import DiscordWidget from './components/DiscordWidget';
-import { ShareIcon, HeartIcon, DownloadIcon, CopyIcon } from './components/Icons';
+import { ShareIcon, DownloadIcon, CopyIcon } from './components/Icons';
+import { scrapeInstagram, scrapeTikTok, scrapeYoutube } from './services/scraperService';
+
+// Bio Options for Rotation
+const BIO_OPTIONS = [
+  "Criando conteúdo para redes sociais, TikTok, YouTube e muito mais! 🎥",
+  "Minecraft, Vlogs e diversão garantida! 🎮✨",
+  "Se inscreva no canal e me siga nas redes vizinhas! 🚀",
+  "Transformando ideias em vídeos épicos. Vem conferir! 🔥"
+];
 
 // Data Configuration for @TeDabliukk
 const INITIAL_PROFILE: UserProfile = {
   name: "@TeDabliukk",
   handle: "Criador de Conteúdo",
-  bio: "Criando conteúdo para redes sociais, TikTok, YouTube e muito mais! 🎥",
+  bio: BIO_OPTIONS[0], // Will be updated by useEffect
   avatarUrl: "https://i.ibb.co/SDDy2fB6/Design-sem-nome-6.png", 
 };
 
 // Separating links by category for the grid layout
-const SOCIAL_LINKS: SocialLink[] = [
-  { id: '3', title: 'YouTube', url: 'https://www.youtube.com/@TeDabliukk', icon: 'youtube', colorClass: 'red-600' },
-  { id: '1', title: 'Instagram', url: 'https://www.instagram.com/davi_psss/', icon: 'instagram', colorClass: 'pink-600' },
-  { id: '2', title: 'TikTok', url: 'https://www.tiktok.com/@tedabliu.kk', icon: 'tiktok', colorClass: 'black' },
+const INITIAL_SOCIAL_LINKS: SocialLink[] = [
+  { 
+    id: '3', 
+    title: 'YouTube', 
+    url: 'https://www.youtube.com/@TeDabliukk', 
+    icon: 'youtube', 
+    colorClass: 'red-600',
+    followers: 'Carregando...' // Placeholder
+  },
+  { 
+    id: '1', 
+    title: 'Instagram', 
+    url: 'https://www.instagram.com/davi_psss/', 
+    icon: 'instagram', 
+    colorClass: 'pink-600',
+    followers: 'Carregando...' // Placeholder
+  },
+  { 
+    id: '2', 
+    title: 'TikTok', 
+    url: 'https://www.tiktok.com/@tedabliu.kk', 
+    icon: 'tiktok', 
+    colorClass: 'black',
+    followers: 'Carregando...' // Placeholder
+  },
 ];
 
 const DOWNLOAD_LINKS: SocialLink[] = [
@@ -26,71 +56,72 @@ const DOWNLOAD_LINKS: SocialLink[] = [
     title: 'Baixar Mundo (Bedrock)', 
     url: 'https://drive.google.com/file/d/1gJu1o0ZlwIfN2z6NbQc2fYwJd3yWc_jD/view?usp=sharing', 
     icon: 'download', 
-    colorClass: 'emerald-600' 
+    colorClass: 'emerald-600' // Green for Bedrock
   },
   { 
     id: '5', 
     title: 'Baixar Mundo (Java)', 
     url: 'https://drive.google.com/file/d/1PJ6VMg4SPUI1s8emKCJU7c2z4b8G3LBD/view?usp=drive_link', 
     icon: 'download', 
-    colorClass: 'indigo-600'
+    colorClass: 'indigo-600' // Blue/Indigo for Java
   },
 ];
 
-// Configuração da CounterAPI
-const counter = new Counter({
-  workspace: 'davi-passos-workspace', // Seu namespace atual
-});
-// ID do contador (baseado na URL que você forneceu anteriormente)
-const COUNTER_ID = 'ut_ENIMOBprfe6uD2mo1LsUn2LKMDbLQv84IoXvHSXd';
-
 const App: React.FC = () => {
-  const [profile] = useState<UserProfile>(INITIAL_PROFILE);
-  const [likes, setLikes] = useState<number>(0);
-  const [hasLiked, setHasLiked] = useState(false);
-  const [isLoadingLikes, setIsLoadingLikes] = useState(true);
+  const [profile, setProfile] = useState<UserProfile>(INITIAL_PROFILE);
+  const [socialLinks, setSocialLinks] = useState<SocialLink[]>(INITIAL_SOCIAL_LINKS);
   const [shareBtnText, setShareBtnText] = useState("Compartilhar");
   const [isSharing, setIsSharing] = useState(false);
 
+  // Random Bio Logic
   useEffect(() => {
-    // 1. Verifica se o usuário já deu like localmente
-    const savedLike = localStorage.getItem('profile_liked');
-    if (savedLike === 'true') {
-      setHasLiked(true);
-    }
+    const randomIndex = Math.floor(Math.random() * BIO_OPTIONS.length);
+    setProfile(prev => ({ ...prev, bio: BIO_OPTIONS[randomIndex] }));
+  }, []);
 
-    // 2. Busca o total de likes usando a lib
-    const fetchLikes = async () => {
-      try {
-        const response = await counter.get(COUNTER_ID);
-        if (response && typeof response.value === 'number') {
-          setLikes(response.value);
-        }
-      } catch (error) {
-        console.error("Erro ao carregar likes:", error);
-      } finally {
-        setIsLoadingLikes(false);
+  // Scraping Logic
+  useEffect(() => {
+    const fetchFollowers = async () => {
+      // YouTube
+      const ytSubs = await scrapeYoutube('@TeDabliukk');
+      if (ytSubs) {
+        setSocialLinks(prev => prev.map(link => 
+          link.id === '3' ? { ...link, followers: ytSubs } : link
+        ));
+      } else {
+        // Fallback manual se falhar
+        setSocialLinks(prev => prev.map(link => 
+          link.id === '3' ? { ...link, followers: 'Ver Canal' } : link
+        ));
+      }
+
+      // Instagram
+      const instaFollowers = await scrapeInstagram('davi_psss');
+      if (instaFollowers) {
+        setSocialLinks(prev => prev.map(link => 
+          link.id === '1' ? { ...link, followers: instaFollowers } : link
+        ));
+      } else {
+         setSocialLinks(prev => prev.map(link => 
+          link.id === '1' ? { ...link, followers: 'Ver Perfil' } : link
+        ));
+      }
+
+      // TikTok
+      const tiktokFollowers = await scrapeTikTok('tedabliu.kk');
+      if (tiktokFollowers) {
+        setSocialLinks(prev => prev.map(link => 
+          link.id === '2' ? { ...link, followers: tiktokFollowers } : link
+        ));
+      } else {
+        setSocialLinks(prev => prev.map(link => 
+          link.id === '2' ? { ...link, followers: 'Ver Perfil' } : link
+        ));
       }
     };
 
-    fetchLikes();
+    fetchFollowers();
   }, []);
-
-  const handleLike = async () => {
-    if (hasLiked) return;
-
-    // Atualização Otimista
-    setHasLiked(true);
-    setLikes(prev => prev + 1);
-    localStorage.setItem('profile_liked', 'true');
-
-    try {
-      // Incrementa o contador usando a lib
-      await counter.up(COUNTER_ID);
-    } catch (error) {
-      console.error("Falha ao incrementar like:", error);
-    }
-  };
 
   const shareProfile = async () => {
     if (isSharing) return;
@@ -120,9 +151,7 @@ const App: React.FC = () => {
         await copyToClipboard();
       }
     } catch (error: any) {
-      if (error.name !== 'AbortError') {
-         await copyToClipboard();
-      }
+      await copyToClipboard();
     } finally {
       setIsSharing(false);
     }
@@ -166,22 +195,6 @@ const App: React.FC = () => {
 
           {/* Action Pills */}
           <div className="flex items-center gap-3 mb-8">
-             <button 
-              onClick={handleLike}
-              disabled={hasLiked}
-              className={`
-                flex items-center gap-2 px-6 py-2.5 rounded-full border transition-all duration-300 shadow-sm group
-                ${hasLiked 
-                  ? 'bg-rose-50 border-rose-200 text-rose-500 cursor-default' 
-                  : 'bg-white border-slate-200 text-slate-600 hover:scale-105 hover:border-rose-200 hover:text-rose-500 active:scale-95 cursor-pointer'}
-              `}
-            >
-              <HeartIcon className={`w-5 h-5 transition-transform duration-300 ${hasLiked ? 'fill-current scale-110' : 'group-hover:scale-110'}`} />
-              <span className="font-bold text-sm">
-                {isLoadingLikes ? '...' : likes}
-              </span>
-            </button>
-            
             <button 
               onClick={shareProfile}
               className={`
@@ -203,17 +216,17 @@ const App: React.FC = () => {
           
           {/* Feature: YouTube (Full Width or Big Card) */}
           <div className="col-span-2">
-            <LinkCard link={SOCIAL_LINKS[0]} variant="featured" />
+            <LinkCard link={socialLinks[0]} variant="featured" />
           </div>
 
           {/* Square: Instagram */}
           <div className="col-span-1">
-            <LinkCard link={SOCIAL_LINKS[1]} variant="square" />
+            <LinkCard link={socialLinks[1]} variant="square" />
           </div>
 
           {/* Square: TikTok */}
           <div className="col-span-1">
-            <LinkCard link={SOCIAL_LINKS[2]} variant="square" />
+            <LinkCard link={socialLinks[2]} variant="square" />
           </div>
 
         </div>
