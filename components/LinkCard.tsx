@@ -33,14 +33,17 @@ const LinkCard: React.FC<LinkCardProps> = ({ link, variant = 'list', className =
   };
 
   // Base styles shared by all variants
-  // Added cubic-bezier for smoother feel, increased hover translation slightly, and added active state shadow reduction
+  // Updated for Premium Feel: Gradient background, crisp ring border, and deep animated shadow
   const baseStyles = `
     group relative flex overflow-hidden
-    bg-white border border-slate-200 
+    bg-gradient-to-br from-white via-white to-slate-50
+    border border-slate-200/60
     transition-all duration-300 ease-[cubic-bezier(0.25,0.1,0.25,1)]
-    hover:border-slate-300 hover:shadow-xl hover:shadow-slate-200/60 hover:-translate-y-1.5
-    active:scale-[0.97] active:shadow-sm
+    hover:border-slate-300 hover:to-white
+    hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:-translate-y-1.5
+    active:scale-[0.98] active:shadow-sm
     cursor-pointer
+    ring-1 ring-black/5
   `;
 
   // Specific styles for variants
@@ -53,16 +56,16 @@ const LinkCard: React.FC<LinkCardProps> = ({ link, variant = 'list', className =
     `,
     featured: `
       flex-col justify-between p-6 rounded-3xl h-full min-h-[160px]
-      bg-gradient-to-br from-white to-slate-50
+      bg-gradient-to-br from-white to-slate-100/50
     `
   };
 
   // Icon container styles
-  // Added group-hover:scale-110 and rotate for dynamic movement
+  // Added cleaner shadows and colors
   const iconContainerStyles = `
     flex items-center justify-center rounded-xl transition-all duration-300 transform group-hover:scale-110 group-hover:rotate-3
-    ${variant === 'square' ? 'p-3 mb-3 bg-slate-50 group-hover:bg-slate-100 text-slate-700' : ''}
-    ${variant === 'list' ? `p-2.5 bg-slate-50 text-slate-600 group-hover:bg-${link.colorClass} group-hover:text-white` : ''}
+    ${variant === 'square' ? 'p-3 mb-3 bg-white shadow-sm ring-1 ring-slate-100 group-hover:shadow-md text-slate-700' : ''}
+    ${variant === 'list' ? `p-2.5 bg-slate-50 text-slate-600 group-hover:bg-${link.colorClass} group-hover:text-white group-hover:shadow-lg group-hover:shadow-${link.colorClass}/30` : ''}
     ${variant === 'featured' ? `w-12 h-12 bg-${link.colorClass} text-white mb-auto shadow-lg shadow-${link.colorClass}/30` : ''}
   `;
 

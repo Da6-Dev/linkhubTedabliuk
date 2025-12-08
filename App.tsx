@@ -37,7 +37,7 @@ const INITIAL_SOCIAL_LINKS: SocialLink[] = [
     url: 'https://www.instagram.com/davi_psss/', 
     icon: 'instagram', 
     colorClass: 'pink-600',
-    cta: 'Bastidores e fotos exclusivas 📸'
+    cta: 'Bastidores e fotos 📸'
   },
   { 
     id: '2', 
@@ -45,7 +45,7 @@ const INITIAL_SOCIAL_LINKS: SocialLink[] = [
     url: 'https://www.tiktok.com/@tedabliu.kk', 
     icon: 'tiktok', 
     colorClass: 'black',
-    cta: 'Vídeos Curtos da Nossa Série! 🤣'
+    cta: 'Vídeos Curtos! 🤣'
   },
 ];
 
@@ -56,7 +56,7 @@ const DOWNLOAD_LINKS: SocialLink[] = [
     url: 'https://drive.google.com/file/d/1gJu1o0ZlwIfN2z6NbQc2fYwJd3yWc_jD/view?usp=sharing', 
     icon: 'download', 
     colorClass: 'emerald-600',
-    cta: 'Versão para Celular/Console'
+    cta: 'Para Celular/Console'
   },
   { 
     id: '5', 
@@ -108,7 +108,6 @@ const App: React.FC = () => {
         await copyToClipboard();
       }
     } catch (error: any) {
-      // Fallback silencioso
       await copyToClipboard();
     } finally {
       setIsSharing(false);
@@ -116,108 +115,123 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen relative flex flex-col items-center pt-12 pb-12 px-4 md:px-8">
+    <div className="min-h-screen relative flex justify-center pt-8 pb-12 px-4 md:px-8 overflow-x-hidden">
       
-      {/* Decorative Gradient Blur */}
+      {/* Decorative Background Elements */}
       <div className="fixed top-0 left-0 right-0 h-96 bg-gradient-to-b from-teal-50/80 via-white/80 to-transparent z-0 pointer-events-none" />
       <div className="fixed -top-40 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-teal-200/20 rounded-full blur-[100px] z-0 pointer-events-none" />
 
-      {/* Main Container */}
-      <main className="relative z-10 w-full max-w-[500px] flex flex-col items-center animate-fade-in-up">
+      {/* Main Container - Responsive Width */}
+      <main className="relative z-10 w-full max-w-5xl animate-fade-in-up">
         
-        {/* Profile Header */}
-        <div className="flex flex-col items-center text-center mb-8 w-full">
-          {/* Avatar */}
-          <div className="relative group mb-5">
-            <div className="absolute -inset-2 bg-gradient-to-tr from-teal-300 to-cyan-300 rounded-full opacity-60 group-hover:opacity-100 transition duration-500 blur-md" />
-            <div className="relative p-1.5 bg-white rounded-full">
-              <img 
-                src={profile.avatarUrl} 
-                alt={profile.name} 
-                className="w-28 h-28 rounded-full object-cover shadow-sm bg-gray-100"
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12">
+          
+          {/* ==================== LEFT COLUMN: PROFILE (Sticky on Desktop) ==================== */}
+          <aside className="md:col-span-5 lg:col-span-4 flex flex-col items-center md:items-start text-center md:text-left">
+            <div className="md:sticky md:top-12 w-full flex flex-col items-center md:items-start">
+              
+              {/* Avatar */}
+              <div className="relative group mb-6">
+                <div className="absolute -inset-2 bg-gradient-to-tr from-teal-300 to-cyan-300 rounded-full opacity-60 group-hover:opacity-100 transition duration-500 blur-md" />
+                <div className="relative p-1.5 bg-white rounded-full">
+                  <img 
+                    src={profile.avatarUrl} 
+                    alt={profile.name} 
+                    className="w-32 h-32 md:w-40 md:h-40 rounded-full object-cover shadow-sm bg-gray-100"
+                  />
+                </div>
+                <div className="absolute bottom-3 right-3 w-6 h-6 bg-teal-400 border-4 border-white rounded-full" title="Online" />
+              </div>
+              
+              {/* Name & Bio */}
+              <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight mb-2">
+                {profile.name}
+              </h1>
+              <span className="text-teal-600 text-sm font-bold uppercase tracking-widest mb-4 inline-block bg-teal-50 px-3 py-1 rounded-full border border-teal-100">
+                {profile.handle}
+              </span>
+
+              <p className="text-slate-500 font-medium max-w-xs md:max-w-full leading-relaxed mb-8">
+                {profile.bio}
+              </p>
+
+              {/* Share Button */}
+              <div className="w-full max-w-xs md:max-w-full">
+                <button 
+                  onClick={shareProfile}
+                  className={`
+                    w-full group relative flex items-center justify-center gap-3 px-8 py-4 rounded-2xl text-white font-bold tracking-wide shadow-xl transition-all duration-300 ease-out
+                    ${shareBtnText === 'Copiado!' 
+                      ? 'bg-gradient-to-r from-emerald-500 to-teal-500 scale-105 shadow-emerald-500/25 ring-2 ring-emerald-300/50' 
+                      : 'bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 hover:bg-slate-800 hover:scale-[1.02] hover:-translate-y-1 hover:shadow-2xl hover:shadow-slate-900/30 active:scale-95 ring-1 ring-white/10'}
+                  `}
+                >
+                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                  
+                  {shareBtnText === 'Copiado!' ? (
+                    <CopyIcon className="w-5 h-5 relative z-10" /> 
+                  ) : (
+                    <ShareIcon className="w-5 h-5 relative z-10 group-hover:rotate-12 transition-transform duration-300" />
+                  )}
+                  <span className="relative z-10">{shareBtnText}</span>
+                </button>
+              </div>
+            </div>
+          </aside>
+
+
+          {/* ==================== RIGHT COLUMN: LINKS & CONTENT ==================== */}
+          <section className="md:col-span-7 lg:col-span-8 flex flex-col gap-8">
+            
+            {/* Social Bento Grid */}
+            <div className="grid grid-cols-2 gap-4">
+              {/* YouTube - Spans full width on mobile, 2 cols on desktop */}
+              <div className="col-span-2">
+                <LinkCard link={socialLinks[0]} variant="featured" className="h-full" />
+              </div>
+
+              {/* Instagram & TikTok */}
+              <div className="col-span-1">
+                <LinkCard link={socialLinks[1]} variant="square" className="h-full" />
+              </div>
+              <div className="col-span-1">
+                <LinkCard link={socialLinks[2]} variant="square" className="h-full" />
+              </div>
+            </div>
+
+            {/* Downloads Section */}
+            <div>
+               <div className="flex items-center gap-2 mb-4 px-1 opacity-80">
+                 <DownloadIcon className="w-4 h-4 text-slate-400" />
+                 <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Downloads Minecraft</span>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                 {DOWNLOAD_LINKS.map(link => (
+                   <LinkCard key={link.id} link={link} variant="list" className="!py-4 !px-5" />
+                 ))}
+              </div>
+            </div>
+
+            {/* Discord Widget */}
+            <div>
+              <DiscordWidget 
+                serverId="1334855536700686388" 
+                inviteUrl="https://discord.gg/W9MmqNgEBP" 
+                customIconUrl={profile.avatarUrl}
               />
             </div>
-            <div className="absolute bottom-2 right-2 w-5 h-5 bg-teal-400 border-4 border-white rounded-full" title="Online" />
-          </div>
-          
-          <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight mb-1">
-            {profile.name}
-          </h1>
-          <span className="text-teal-600 text-sm font-bold uppercase tracking-widest mb-4">
-            {profile.handle}
-          </span>
 
-          <p className="text-slate-500 font-medium max-w-xs leading-relaxed mb-6">
-            {profile.bio}
-          </p>
+            {/* Mobile-Only Footer (Hidden on Desktop to avoid duplication or awkward placement) */}
+            <footer className="mt-8 text-center md:text-left pb-8 md:pb-0">
+              <div className="w-8 h-1 bg-slate-200 rounded-full mx-auto md:mx-0 mb-4"></div>
+              <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider">
+                © {new Date().getFullYear()} TeDabliukk
+              </p>
+            </footer>
 
-          {/* Action Pills */}
-          <div className="flex items-center gap-3 mb-8">
-            <button 
-              onClick={shareProfile}
-              className={`
-                flex items-center gap-2 px-6 py-2.5 rounded-full border shadow-md transition-all duration-300
-                ${shareBtnText === 'Copiado!' 
-                  ? 'bg-green-500 border-green-500 text-white' 
-                  : 'bg-slate-900 border-slate-900 text-white hover:bg-slate-800 hover:scale-105'}
-              `}
-            >
-              {shareBtnText === 'Copiado!' ? <CopyIcon className="w-4 h-4" /> : <ShareIcon className="w-4 h-4" />}
-              <span className="font-bold text-sm">{shareBtnText}</span>
-            </button>
-          </div>
+          </section>
 
         </div>
-
-        {/* BENTO GRID LAYOUT */}
-        <div className="w-full grid grid-cols-2 gap-3 mb-8">
-          
-          {/* Feature: YouTube (Full Width or Big Card) */}
-          <div className="col-span-2">
-            <LinkCard link={socialLinks[0]} variant="featured" />
-          </div>
-
-          {/* Square: Instagram */}
-          <div className="col-span-1">
-            <LinkCard link={socialLinks[1]} variant="square" />
-          </div>
-
-          {/* Square: TikTok */}
-          <div className="col-span-1">
-            <LinkCard link={socialLinks[2]} variant="square" />
-          </div>
-
-        </div>
-
-        {/* Downloads Section */}
-        <div className="w-full mb-8">
-           <div className="flex items-center gap-2 mb-4 px-1 opacity-80">
-             <DownloadIcon className="w-4 h-4 text-slate-400" />
-             <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Downloads Minecraft</span>
-          </div>
-          <div className="flex flex-col gap-3">
-             {DOWNLOAD_LINKS.map(link => (
-               <LinkCard key={link.id} link={link} variant="list" className="!py-3 !px-4" />
-             ))}
-          </div>
-        </div>
-
-        {/* Discord Widget */}
-        <div className="w-full">
-          <DiscordWidget 
-            serverId="1334855536700686388" 
-            inviteUrl="https://discord.gg/W9MmqNgEBP" 
-            customIconUrl={profile.avatarUrl}
-          />
-        </div>
-
-        {/* Footer */}
-        <footer className="mt-16 text-center pb-8">
-          <div className="w-8 h-1 bg-slate-200 rounded-full mx-auto mb-4"></div>
-          <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider">
-            © {new Date().getFullYear()} TeDabliukk
-          </p>
-        </footer>
       </main>
     </div>
   );
