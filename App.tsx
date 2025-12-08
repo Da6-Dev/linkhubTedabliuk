@@ -131,27 +131,30 @@ const App: React.FC = () => {
             <div className="md:sticky md:top-12 w-full flex flex-col items-center md:items-start">
               
               {/* Avatar */}
-              <div className="relative group mb-6">
+              <div className="relative group mb-8">
                 <div className="absolute -inset-2 bg-gradient-to-tr from-teal-300 to-cyan-300 rounded-full opacity-60 group-hover:opacity-100 transition duration-500 blur-md" />
                 <div className="relative p-1.5 bg-white rounded-full">
                   <img 
                     src={profile.avatarUrl} 
                     alt={profile.name} 
-                    className="w-32 h-32 md:w-40 md:h-40 rounded-full object-cover shadow-sm bg-gray-100"
+                    className="w-32 h-32 md:w-44 md:h-44 rounded-full object-cover shadow-sm bg-gray-100"
                   />
                 </div>
-                <div className="absolute bottom-3 right-3 w-6 h-6 bg-teal-400 border-4 border-white rounded-full" title="Online" />
+                <div className="absolute bottom-4 right-4 w-6 h-6 bg-teal-400 border-4 border-white rounded-full" title="Online" />
               </div>
               
-              {/* Name & Bio */}
-              <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight mb-2">
+              {/* Name & Bio - TYPOGRAPHY UPDATE */}
+              <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tighter mb-3 leading-tight">
                 {profile.name}
               </h1>
-              <span className="text-teal-600 text-sm font-bold uppercase tracking-widest mb-4 inline-block bg-teal-50 px-3 py-1 rounded-full border border-teal-100">
-                {profile.handle}
-              </span>
+              
+              <div className="mb-6">
+                <span className="text-teal-700 text-xs font-bold uppercase tracking-widest inline-block bg-teal-100/50 px-3 py-1.5 rounded-full border border-teal-200/50">
+                  {profile.handle}
+                </span>
+              </div>
 
-              <p className="text-slate-500 font-medium max-w-xs md:max-w-full leading-relaxed mb-8">
+              <p className="text-slate-600 text-lg font-normal leading-relaxed max-w-xs md:max-w-full mb-8 opacity-90">
                 {profile.bio}
               </p>
 
@@ -173,7 +176,7 @@ const App: React.FC = () => {
                   ) : (
                     <ShareIcon className="w-5 h-5 relative z-10 group-hover:rotate-12 transition-transform duration-300" />
                   )}
-                  <span className="relative z-10">{shareBtnText}</span>
+                  <span className="relative z-10 text-base">{shareBtnText}</span>
                 </button>
               </div>
             </div>
@@ -184,26 +187,26 @@ const App: React.FC = () => {
           <section className="md:col-span-7 lg:col-span-8 flex flex-col gap-8">
             
             {/* Social Bento Grid */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-4 md:gap-6">
               {/* YouTube - Spans full width on mobile, 2 cols on desktop */}
               <div className="col-span-2">
-                <LinkCard link={socialLinks[0]} variant="featured" className="h-full" />
+                <LinkCard link={socialLinks[0]} variant="featured" className="h-full min-h-[180px]" />
               </div>
 
               {/* Instagram & TikTok */}
               <div className="col-span-1">
-                <LinkCard link={socialLinks[1]} variant="square" className="h-full" />
+                <LinkCard link={socialLinks[1]} variant="square" className="h-full aspect-square md:aspect-auto md:h-48" />
               </div>
               <div className="col-span-1">
-                <LinkCard link={socialLinks[2]} variant="square" className="h-full" />
+                <LinkCard link={socialLinks[2]} variant="square" className="h-full aspect-square md:aspect-auto md:h-48" />
               </div>
             </div>
 
             {/* Downloads Section */}
             <div>
-               <div className="flex items-center gap-2 mb-4 px-1 opacity-80">
-                 <DownloadIcon className="w-4 h-4 text-slate-400" />
-                 <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Downloads Minecraft</span>
+               <div className="flex items-center gap-2 mb-4 px-1 opacity-90">
+                 <DownloadIcon className="w-5 h-5 text-slate-500" />
+                 <span className="text-sm font-bold text-slate-500 uppercase tracking-widest">Downloads Minecraft</span>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                  {DOWNLOAD_LINKS.map(link => (
@@ -223,8 +226,8 @@ const App: React.FC = () => {
 
             {/* Mobile-Only Footer (Hidden on Desktop to avoid duplication or awkward placement) */}
             <footer className="mt-8 text-center md:text-left pb-8 md:pb-0">
-              <div className="w-8 h-1 bg-slate-200 rounded-full mx-auto md:mx-0 mb-4"></div>
-              <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider">
+              <div className="w-12 h-1 bg-slate-200 rounded-full mx-auto md:mx-0 mb-6"></div>
+              <p className="text-slate-400 text-xs font-bold uppercase tracking-widest hover:text-slate-500 transition-colors cursor-default">
                 © {new Date().getFullYear()} TeDabliukk
               </p>
             </footer>
