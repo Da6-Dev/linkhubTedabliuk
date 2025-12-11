@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { UserProfile, SocialLink } from './types';
 import LinkCard from './components/LinkCard';
 import DiscordWidget from './components/DiscordWidget';
+import InAppBrowserBanner from './components/InAppBrowserBanner';
 import { ShareIcon, DownloadIcon, CopyIcon } from './components/Icons';
 
 // Bio Options for Rotation
@@ -117,6 +118,9 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen relative flex justify-center pt-8 pb-12 px-4 md:px-8 overflow-x-hidden">
       
+      {/* Aviso Inteligente para TikTok/Instagram */}
+      <InAppBrowserBanner />
+
       {/* Decorative Background Elements */}
       <div className="fixed top-0 left-0 right-0 h-96 bg-gradient-to-b from-teal-50/80 via-white/80 to-transparent z-0 pointer-events-none" />
       <div className="fixed -top-40 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-teal-200/20 rounded-full blur-[100px] z-0 pointer-events-none" />
