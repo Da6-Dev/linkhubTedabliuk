@@ -34,8 +34,7 @@ const DiscordWidget: React.FC<DiscordWidgetProps> = ({ serverId, inviteUrl, cust
   return (
     <a 
       href={finalLink}
-      target="_blank" 
-      rel="noopener noreferrer"
+      // REMOVIDO target="_blank" para evitar problemas no navegador do TikTok
       // Added active:scale-[0.98] and refined hover translation
       className="group block relative w-full transform transition-all duration-300 ease-[cubic-bezier(0.25,0.1,0.25,1)] hover:-translate-y-1.5 active:scale-[0.98] cursor-pointer"
     >

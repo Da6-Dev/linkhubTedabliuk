@@ -72,8 +72,7 @@ const LinkCard: React.FC<LinkCardProps> = ({ link, variant = 'list', className =
   return (
     <a
       href={link.url}
-      target="_blank"
-      rel="noopener noreferrer"
+      // REMOVIDO target="_blank" para evitar bugs no navegador do TikTok/Instagram
       className={`${baseStyles} ${variantStyles[variant]} ${className}`}
     >
       {/* Background decoration for featured */}
