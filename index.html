@@ -37,6 +37,10 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- SkinView3D Library -->
+    <script src="https://unpkg.com/skinview3d@3.0.1/bundles/skinview3d.bundle.js"></script>
+
     <style>
       body {
         font-family: 'Outfit', sans-serif;
@@ -61,6 +65,21 @@
         background-color: #f8fafc;
         background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
         background-size: 24px 24px;
+      }
+
+      /* View Transition API - Circular Reveal Effect */
+      /* Simplificado para garantir que a transição funcione em ambos os sentidos */
+      ::view-transition-old(root),
+      ::view-transition-new(root) {
+        animation: none;
+        mix-blend-mode: normal;
+      }
+      /* Garante que a nova view (que estamos animando crescendo) fique por cima */
+      ::view-transition-new(root) {
+        z-index: 2;
+      }
+      ::view-transition-old(root) {
+        z-index: 1;
       }
     </style>
   <script type="importmap">

@@ -1,5 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
+import { DownloadIcon, DiscordIcon } from './Icons';
 
 const InAppBrowserBanner: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -14,7 +15,7 @@ const InAppBrowserBanner: React.FC = () => {
 
     const ua = navigator.userAgent || navigator.vendor || (window as any).opera;
 
-    // Lógica de detecção (Revertida para a que funcionava)
+    // Lógica de detecção
     const isTikTok = /TikTok|Musical_ly|Bytedance/i.test(ua);
     const isInstagram = /Instagram/i.test(ua);
     const isFacebook = /FBAN|FBAV|FB_IAB/i.test(ua);
@@ -22,77 +23,112 @@ const InAppBrowserBanner: React.FC = () => {
 
     if (isTikTok || isInstagram || isFacebook || isAndroidWebView) {
       // Delay pequeno para garantir que a interface do app carregou
-      setTimeout(() => setIsVisible(true), 1000);
+      setTimeout(() => setIsVisible(true), 500);
     }
   }, []);
 
   if (!isVisible) return null;
 
   return (
-    <div className="fixed inset-x-0 top-0 z-[100] h-screen pointer-events-none font-sans">
-      {/* Container Principal */}
-      <div className="max-w-md mx-auto relative h-full">
-        
-        {/* SETA ANIMADA E TEXTO FLUTUANTE */}
-        {/* Posicionada para apontar explicitamente para o canto superior direito */}
-        <div className="absolute top-1 right-3 flex flex-col items-end animate-bounce duration-1000 z-[102]">
-          <div className="text-white font-extrabold text-xs uppercase tracking-wide bg-slate-900 px-3 py-1.5 rounded-lg mb-1 shadow-lg border border-white/20">
-            CLIQUE AQUI ↗
-          </div>
-          {/* Seta maior e com sombra forte para contraste */}
-          {/* ROTACAO ALTERADA: rotate-[30deg] para apontar para a direita */}
-          <svg 
-            width="56" 
-            height="56" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            className="text-white drop-shadow-[0_4px_3px_rgba(0,0,0,0.8)] transform rotate-[30deg] mr-2"
-            stroke="currentColor" 
-            strokeWidth="3" 
-            strokeLinecap="round" 
-            strokeLinejoin="round"
-          >
-            <path d="M12 19V5" />
-            <path d="M5 12l7-7 7 7" />
-          </svg>
+    <div className="fixed inset-0 z-[9999] bg-slate-950/98 backdrop-blur-xl flex flex-col items-center justify-center p-6 text-center font-sans overflow-hidden">
+      
+      {/* Background Grid Pattern (Decorativo) */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+
+      {/* SETA GIGANTE ANIMADA - Apontando para o menu nativo */}
+      <div className="absolute top-2 right-4 flex flex-col items-end animate-bounce duration-1000 z-[1000]">
+        <div className="bg-white text-slate-900 font-black text-xs px-4 py-2 rounded-full shadow-[0_0_20px_rgba(255,255,255,0.5)] mb-2 uppercase tracking-wider border-2 border-teal-400">
+          1. Toque aqui ↗
         </div>
+        <svg 
+          width="64" 
+          height="64" 
+          viewBox="0 0 24 24" 
+          fill="none" 
+          stroke="white" 
+          strokeWidth="3" 
+          strokeLinecap="round" 
+          strokeLinejoin="round" 
+          className="rotate-[30deg] drop-shadow-[0_4px_10px_rgba(0,0,0,1)] text-teal-400"
+        >
+          <path d="M12 19V5" />
+          <path d="M5 12l7-7 7 7" />
+        </svg>
+      </div>
 
-        {/* CARD DE AVISO (Fundo sólido e texto grande) */}
-        <div className="absolute top-24 left-4 right-4 pointer-events-auto">
-          <div className="bg-white border-l-8 border-teal-500 rounded-xl shadow-[0_0_50px_rgba(0,0,0,0.3)] p-5 animate-in fade-in slide-in-from-top-4 duration-700 ring-1 ring-black/5">
-            <div className="flex flex-col gap-3">
-              
-              <div className="flex items-start justify-between">
-                <div>
-                  <h3 className="font-black text-slate-900 text-lg leading-tight mb-2">
-                    Links Bloqueados?
-                  </h3>
-                  <p className="text-slate-800 text-base font-medium leading-snug">
-                    O TikTok/Instagram impede downloads e acesso ao Discord.
-                  </p>
-                </div>
-                
-                {/* Botão Fechar Mais Visível */}
-                <button 
-                  onClick={() => setIsVisible(false)}
-                  className="bg-slate-100 hover:bg-slate-200 text-slate-500 p-2 rounded-full transition-colors -mt-2 -mr-2"
-                  aria-label="Fechar aviso"
-                >
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                </button>
-              </div>
-
-              <div className="bg-slate-50 rounded-lg p-3 border border-slate-200">
-                <p className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-2">Como resolver:</p>
-                <ol className="list-decimal pl-5 space-y-2 text-base font-bold text-slate-900">
-                  <li>Toque nos <span className="bg-slate-200 px-1.5 rounded">3 pontinhos</span> lá em cima.</li>
-                  <li>Escolha <span className="text-teal-700 underline decoration-2 underline-offset-2">Abrir no Navegador</span>.</li>
-                </ol>
-              </div>
-
+      <div className="relative z-10 max-w-md w-full animate-in zoom-in duration-300 flex flex-col items-center">
+        
+        {/* Ícone de Alerta */}
+        <div className="mb-6 relative">
+          <div className="absolute inset-0 bg-red-500 rounded-full blur-2xl opacity-20 animate-pulse"></div>
+          <div className="w-24 h-24 bg-gradient-to-b from-slate-800 to-slate-900 rounded-3xl border-2 border-slate-700 flex items-center justify-center shadow-2xl relative">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+            <div className="absolute -bottom-2 -right-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-md border border-slate-900">
+              ERRO
             </div>
           </div>
         </div>
+
+        <h1 className="text-3xl md:text-4xl font-black text-white mb-3 leading-tight tracking-tight">
+          Navegador Bloqueado
+        </h1>
+        <p className="text-slate-400 text-lg font-medium leading-relaxed mb-8 max-w-xs mx-auto">
+          O TikTok/Instagram impede downloads e acesso ao Discord.
+        </p>
+
+        {/* Instruções Visuais */}
+        <div className="w-full bg-slate-900/80 rounded-2xl p-6 border border-slate-700/50 shadow-2xl mb-8 text-left backdrop-blur-sm">
+          <h3 className="text-teal-400 font-bold uppercase tracking-widest text-xs mb-4 flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-teal-400 animate-pulse"></span>
+            Solução Obrigatória:
+          </h3>
+          <div className="space-y-4">
+            <div className="flex items-center gap-4 group">
+              <span className="flex items-center justify-center w-8 h-8 shrink-0 rounded-full bg-slate-800 text-white font-bold border border-slate-600 group-hover:border-teal-500 transition-colors">1</span>
+              <p className="text-slate-200 font-bold text-sm">Toque nos <span className="bg-slate-800 px-2 py-0.5 rounded border border-slate-600 text-white">3 pontinhos</span> ou ícone acima.</p>
+            </div>
+            <div className="flex items-center gap-4 group">
+              <span className="flex items-center justify-center w-8 h-8 shrink-0 rounded-full bg-teal-500 text-slate-900 font-bold shadow-[0_0_15px_rgba(20,184,166,0.5)]">2</span>
+              <p className="text-white font-bold text-sm">Escolha <span className="text-teal-400 underline decoration-2 underline-offset-4 decoration-teal-500/50">Abrir no Navegador</span>.</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Simulação de Botões Bloqueados */}
+        <div className="w-full space-y-3 opacity-60 grayscale pointer-events-none select-none relative scale-95">
+          {/* Faixa de Bloqueio */}
+          <div className="absolute inset-0 z-20 flex items-center justify-center">
+             <div className="bg-red-600 text-white font-black text-sm px-6 py-2 rounded shadow-2xl border-2 border-white/20 rotate-[-8deg] tracking-widest">
+               BLOQUEADO 🔒
+             </div>
+          </div>
+          
+          {/* Botão Fake 1 */}
+          <div className="flex items-center justify-between p-4 bg-slate-800 rounded-xl border border-slate-700/50">
+            <div className="flex items-center gap-3">
+               <div className="p-2 bg-slate-700 rounded-lg"><DownloadIcon className="w-5 h-5 text-slate-500" /></div>
+               <span className="font-bold text-slate-400">Baixar Mapa (Bedrock)</span>
+            </div>
+          </div>
+           {/* Botão Fake 2 */}
+           <div className="flex items-center justify-between p-4 bg-slate-800 rounded-xl border border-slate-700/50">
+            <div className="flex items-center gap-3">
+               <div className="p-2 bg-slate-700 rounded-lg"><DiscordIcon className="w-5 h-5 text-slate-500" /></div>
+               <span className="font-bold text-slate-400">Entrar no Discord</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Botão de saída de emergência (Discreto) */}
+        <button 
+          onClick={() => setIsVisible(false)} 
+          className="mt-8 text-[10px] font-medium text-slate-700 uppercase tracking-widest hover:text-slate-500 transition-colors"
+        >
+          Continuar mesmo assim (Pode falhar)
+        </button>
 
       </div>
     </div>
