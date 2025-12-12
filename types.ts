@@ -14,10 +14,3 @@ export interface UserProfile {
   bio: string;
   avatarUrl: string;
 }
-
-export enum GeneratorStatus {
-  IDLE = 'IDLE',
-  LOADING = 'LOADING',
-  SUCCESS = 'SUCCESS',
-  ERROR = 'ERROR'
-}
