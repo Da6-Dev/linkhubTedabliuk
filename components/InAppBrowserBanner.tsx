@@ -38,9 +38,8 @@ const InAppBrowserBanner: React.FC = () => {
   return (
     <div className="fixed inset-0 z-[9999] flex flex-col font-sans">
       
-      {/* 1. Background Blur Layer (Simulates the app behind nicely) */}
+      {/* 1. Background Blur Layer */}
       <div className="absolute inset-0 bg-slate-950/95 backdrop-blur-3xl z-0">
-        {/* Decorative ambient gradients */}
         <div className="absolute top-0 right-0 w-80 h-80 bg-teal-500/20 rounded-full blur-[100px] animate-pulse"></div>
         <div className="absolute bottom-0 left-0 w-80 h-80 bg-indigo-500/20 rounded-full blur-[100px]"></div>
       </div>
@@ -48,31 +47,30 @@ const InAppBrowserBanner: React.FC = () => {
       {/* 2. Main Content Container */}
       <div className="relative z-10 flex-1 flex flex-col px-6 py-8">
         
-        {/* --- SETA INDICATIVA (CRUCIAL) --- */}
-        <div className="absolute top-2 right-4 flex flex-col items-end animate-bounce duration-[1500ms]">
-          <div className="flex items-center gap-2 bg-white text-slate-900 px-4 py-2 rounded-full font-bold text-sm shadow-[0_0_30px_rgba(255,255,255,0.3)] mb-2 border-2 border-teal-400">
-            <span>Toque aqui</span>
-            {/* Ícone de 3 pontos ou Share dependendo do OS (Visual genérico) */}
-            <div className="flex gap-0.5">
-               <div className="w-1 h-1 bg-slate-900 rounded-full"></div>
-               <div className="w-1 h-1 bg-slate-900 rounded-full"></div>
-               <div className="w-1 h-1 bg-slate-900 rounded-full"></div>
-            </div>
-          </div>
+        {/* --- SETA INDICATIVA (PERSONALIZADA) --- */}
+        <div className="absolute top-4 right-6 flex flex-col items-center animate-bounce duration-[1500ms] z-50">
+          
+          {/* Seta Girada em 60 Graus */}
           <svg 
-            width="50" 
-            height="50" 
+            width="64" 
+            height="64" 
             viewBox="0 0 24 24" 
             fill="none" 
             stroke="#2dd4bf" 
             strokeWidth="3" 
             strokeLinecap="round" 
             strokeLinejoin="round" 
-            className="rotate-[30deg] drop-shadow-lg"
+            className="rotate-[60deg] drop-shadow-[0_0_15px_rgba(45,212,191,0.6)]"
           >
             <path d="M12 19V5" />
             <path d="M5 12l7-7 7 7" />
           </svg>
+
+          {/* Texto Abaixo da Seta */}
+          <div className="mt-2 bg-slate-900/80 backdrop-blur-md text-white px-3 py-1.5 rounded-xl text-xs font-bold border border-teal-500/30 shadow-xl tracking-wide whitespace-nowrap">
+            Toque aqui ↗
+          </div>
+
         </div>
 
         {/* --- CONTEÚDO CENTRAL --- */}
@@ -115,7 +113,7 @@ const InAppBrowserBanner: React.FC = () => {
                  </div>
                  <div>
                    <p className="text-white font-medium text-base">
-                     Toque nos <span className="text-teal-400 font-bold">3 pontinhos</span> ou ícone de compartilhar acima ↗
+                     Encontre as opções no canto superior direito
                    </p>
                  </div>
                </div>
