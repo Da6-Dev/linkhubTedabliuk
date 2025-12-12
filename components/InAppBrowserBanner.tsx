@@ -40,12 +40,13 @@ const InAppBrowserBanner: React.FC = () => {
             CLIQUE AQUI ↗
           </div>
           {/* Seta maior e com sombra forte para contraste */}
+          {/* ROTACAO ALTERADA: rotate-[30deg] para apontar para a direita */}
           <svg 
             width="56" 
             height="56" 
             viewBox="0 0 24 24" 
             fill="none" 
-            className="text-white drop-shadow-[0_4px_3px_rgba(0,0,0,0.8)] transform -rotate-[25deg] -mr-2"
+            className="text-white drop-shadow-[0_4px_3px_rgba(0,0,0,0.8)] transform rotate-[30deg] mr-2"
             stroke="currentColor" 
             strokeWidth="3" 
             strokeLinecap="round" 
