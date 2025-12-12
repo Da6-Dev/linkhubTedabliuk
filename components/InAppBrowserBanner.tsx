@@ -15,7 +15,6 @@ const InAppBrowserBanner: React.FC = () => {
     const ua = navigator.userAgent || navigator.vendor || (window as any).opera;
 
     // Lógica de detecção (Revertida para a que funcionava)
-    // Detecta TikTok, Instagram, Facebook e WebViews de Android
     const isTikTok = /TikTok|Musical_ly|Bytedance/i.test(ua);
     const isInstagram = /Instagram/i.test(ua);
     const isFacebook = /FBAN|FBAV|FB_IAB/i.test(ua);
@@ -35,63 +34,61 @@ const InAppBrowserBanner: React.FC = () => {
       <div className="max-w-md mx-auto relative h-full">
         
         {/* SETA ANIMADA E TEXTO FLUTUANTE */}
-        {/* Posicionado no canto superior direito absoluto, apontando para os 3 pontinhos */}
-        <div className="absolute top-2 right-2 flex flex-col items-end animate-bounce duration-1000 z-[102]">
-          <div className="text-white font-bold text-[10px] uppercase tracking-wide bg-black/60 backdrop-blur-md px-2 py-1 rounded-lg mb-1 border border-white/20 shadow-sm">
-            Toque aqui ↗
+        {/* Posicionada para apontar explicitamente para o canto superior direito */}
+        <div className="absolute top-1 right-3 flex flex-col items-end animate-bounce duration-1000 z-[102]">
+          <div className="text-white font-extrabold text-xs uppercase tracking-wide bg-slate-900 px-3 py-1.5 rounded-lg mb-1 shadow-lg border border-white/20">
+            CLIQUE AQUI ↗
           </div>
-          {/* Seta SVG desenhada para apontar para o canto superior direito */}
+          {/* Seta maior e com sombra forte para contraste */}
           <svg 
-            width="40" 
-            height="40" 
+            width="56" 
+            height="56" 
             viewBox="0 0 24 24" 
             fill="none" 
-            className="text-white drop-shadow-md rotate-12"
+            className="text-white drop-shadow-[0_4px_3px_rgba(0,0,0,0.8)] transform -rotate-[25deg] -mr-2"
             stroke="currentColor" 
-            strokeWidth="2.5" 
+            strokeWidth="3" 
             strokeLinecap="round" 
             strokeLinejoin="round"
           >
-            <path d="M7 17L17 7" /> {/* Linha diagonal apontando pra cima/direita */}
-            <path d="M7 7h10v10" /> {/* Cabeça da seta */}
+            <path d="M12 19V5" />
+            <path d="M5 12l7-7 7 7" />
           </svg>
         </div>
 
-        {/* CARD DE AVISO (Visual Limpo/Glassmorphism) */}
-        <div className="absolute top-16 left-4 right-4 pointer-events-auto">
-          <div className="bg-white/95 backdrop-blur-xl border border-white/50 rounded-2xl shadow-2xl p-4 animate-in fade-in slide-in-from-top-4 duration-700">
-            <div className="flex items-start gap-4">
+        {/* CARD DE AVISO (Fundo sólido e texto grande) */}
+        <div className="absolute top-24 left-4 right-4 pointer-events-auto">
+          <div className="bg-white border-l-8 border-teal-500 rounded-xl shadow-[0_0_50px_rgba(0,0,0,0.3)] p-5 animate-in fade-in slide-in-from-top-4 duration-700 ring-1 ring-black/5">
+            <div className="flex flex-col gap-3">
               
-              {/* Ícone Informativo (não alarmante) */}
-              <div className="bg-teal-100 p-2.5 rounded-full shrink-0 text-teal-600">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-              </div>
-
-              <div className="flex-1">
-                <h3 className="font-bold text-slate-800 text-sm mb-1">
-                  Melhore sua experiência
-                </h3>
-                <p className="text-slate-500 text-xs leading-relaxed mb-3">
-                  O navegador deste aplicativo pode bloquear downloads e o Discord.
-                </p>
-                
-                <div className="bg-slate-50 rounded-lg p-2 text-xs text-slate-600 border border-slate-100">
-                  <p className="mb-1">Para corrigir:</p>
-                  <ol className="list-decimal pl-4 space-y-1 font-medium">
-                    <li>Toque nos <strong className="text-slate-800">3 pontinhos</strong> (canto superior).</li>
-                    <li>Escolha <strong className="text-teal-600">Abrir no Navegador</strong>.</li>
-                  </ol>
+              <div className="flex items-start justify-between">
+                <div>
+                  <h3 className="font-black text-slate-900 text-lg leading-tight mb-2">
+                    Links Bloqueados?
+                  </h3>
+                  <p className="text-slate-800 text-base font-medium leading-snug">
+                    O TikTok/Instagram impede downloads e acesso ao Discord.
+                  </p>
                 </div>
+                
+                {/* Botão Fechar Mais Visível */}
+                <button 
+                  onClick={() => setIsVisible(false)}
+                  className="bg-slate-100 hover:bg-slate-200 text-slate-500 p-2 rounded-full transition-colors -mt-2 -mr-2"
+                  aria-label="Fechar aviso"
+                >
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
               </div>
 
-              {/* Botão Fechar discreto */}
-              <button 
-                onClick={() => setIsVisible(false)}
-                className="text-slate-400 hover:text-slate-600 p-1 -mt-1 -mr-1"
-                aria-label="Fechar"
-              >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-              </button>
+              <div className="bg-slate-50 rounded-lg p-3 border border-slate-200">
+                <p className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-2">Como resolver:</p>
+                <ol className="list-decimal pl-5 space-y-2 text-base font-bold text-slate-900">
+                  <li>Toque nos <span className="bg-slate-200 px-1.5 rounded">3 pontinhos</span> lá em cima.</li>
+                  <li>Escolha <span className="text-teal-700 underline decoration-2 underline-offset-2">Abrir no Navegador</span>.</li>
+                </ol>
+              </div>
+
             </div>
           </div>
         </div>
