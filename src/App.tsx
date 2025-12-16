@@ -8,12 +8,10 @@ import SEO from "./components/ui/SEO";
 import DownloadSection from "./components/ui/DownloadSection";
 import WorldGuide from "./components/ui/WorldGuide";
 import ProfileHero from "./components/ui/ProfileHero";
-import { motion, Variants } from 'framer-motion';
+import { motion, Variants } from "framer-motion";
+import YouTubeCard from "./components/ui/YouTubeCard";
 const Mascot = lazy(() => import("./components/ui/Mascot"));
-import {
-  SunIcon,
-  MoonIcon,
-} from "./components/widgets/Icons";
+import { SunIcon, MoonIcon } from "./components/widgets/Icons";
 import {
   BIO_OPTIONS,
   INITIAL_PROFILE,
@@ -29,16 +27,16 @@ const containerVariants: Variants = {
     transition: {
       staggerChildren: 0.1,
       delayChildren: 0.3,
-    }
-  }
+    },
+  },
 };
 const itemVariants: Variants = {
   hidden: { opacity: 0, y: 20 },
-  visible: { 
-    opacity: 1, 
-    y: 0, 
-    transition: { type: "spring", stiffness: 300, damping: 24 } 
-  }
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { type: "spring", stiffness: 300, damping: 24 },
+  },
 };
 
 const App: React.FC = () => {
@@ -209,11 +207,7 @@ const App: React.FC = () => {
             {/* Bento Grid Social */}
             <div className="grid grid-cols-2 gap-4">
               <motion.div variants={itemVariants} className="col-span-2">
-                <LinkCard
-                  link={socialLinks[0]}
-                  variant="featured"
-                  darkMode={darkMode}
-                />
+                <YouTubeCard link={socialLinks[0]} />
               </motion.div>
               <motion.div variants={itemVariants} className="col-span-1">
                 <LinkCard

@@ -1,177 +1,151 @@
-import React from "react";
-import { motion } from "framer-motion"; // <--- O SEGREDO
-import { SocialLink } from "../../types/types";
-import {
-  InstagramIcon,
-  TikTokIcon,
-  YoutubeIcon,
-  DiscordIcon,
-  TwitterIcon,
-  LinkIcon,
-  CopyIcon,
-  DownloadIcon,
-} from "../widgets/Icons";
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
+import { SocialLink } from '../../types/types';
+import { 
+  InstagramIcon, 
+  TikTokIcon, 
+  YoutubeIcon, 
+  DiscordIcon, 
+  TwitterIcon, 
+  LinkIcon, 
+  CopyIcon, 
+  DownloadIcon 
+} from '../widgets/Icons';
 
 interface LinkCardProps {
   link: SocialLink;
-  variant?: "list" | "square" | "featured";
+  variant?: 'list' | 'square' | 'featured';
   className?: string;
   darkMode?: boolean;
 }
 
-const getIcon = (type: SocialLink["icon"]) => {
+// Helper para escolher o ícone certo
+const getIcon = (type: SocialLink['icon']) => {
   switch (type) {
-    case "instagram":
-      return <InstagramIcon className="w-6 h-6" />;
-    case "tiktok":
-      return <TikTokIcon className="w-6 h-6" />;
-    case "youtube":
-      return <YoutubeIcon className="w-6 h-6" />;
-    case "discord":
-      return <DiscordIcon className="w-6 h-6" />;
-    case "twitter":
-      return <TwitterIcon className="w-6 h-6" />;
-    case "download":
-      return <DownloadIcon className="w-6 h-6" />;
-    default:
-      return <LinkIcon className="w-6 h-6" />;
+    case 'instagram': return <InstagramIcon className="w-6 h-6" />;
+    case 'tiktok': return <TikTokIcon className="w-6 h-6" />;
+    case 'youtube': return <YoutubeIcon className="w-6 h-6" />;
+    case 'discord': return <DiscordIcon className="w-6 h-6" />;
+    case 'twitter': return <TwitterIcon className="w-6 h-6" />;
+    case 'download': return <DownloadIcon className="w-6 h-6" />;
+    default: return <LinkIcon className="w-6 h-6" />;
   }
 };
 
-const LinkCard: React.FC<LinkCardProps> = ({
-  link,
-  variant = "list",
-  className = "",
-  darkMode = false,
-}) => {
-  const [copied, setCopied] = React.useState(false);
+const LinkCard: React.FC<LinkCardProps> = ({ link, variant = 'list', className = '', darkMode = false }) => {
+  const [copied, setCopied] = useState(false);
 
   const handleCopy = (e: React.MouseEvent) => {
-    e.preventDefault();
+    e.preventDefault(); // Evita abrir o link ao clicar no botão de copiar
     e.stopPropagation();
     navigator.clipboard.writeText(link.url);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
-  // Cores dinâmicas baseadas no modo escuro
-  const cardBg = darkMode
-    ? "rgba(30, 41, 59, 0.6)"
-    : "rgba(255, 255, 255, 0.7)";
-
-  const borderColor = darkMode
-    ? "rgba(51, 65, 85, 0.5)"
-    : "rgba(255, 255, 255, 0.8)";
-
-  // Estilos base
-  const baseStyles = `
-    group relative flex overflow-hidden backdrop-blur-md border
-    cursor-pointer
-  `;
-
-  // Variantes de Layout
-  const variantStyles = {
-    list: `items-center justify-between w-full p-4 rounded-2xl`,
-    square: `flex-col items-center justify-center p-6 text-center rounded-3xl aspect-square md:aspect-auto`,
-    featured: `flex-col justify-between p-6 md:p-8 rounded-[2rem] h-full min-h-[180px]`,
+  // Cores dinâmicas para o ícone (baseado na rede social ou padrão)
+  const getIconColorClass = () => {
+    if (link.colorClass.includes('pink')) return 'bg-pink-500 text-white shadow-pink-500/30';
+    if (link.colorClass.includes('red')) return 'bg-red-500 text-white shadow-red-500/30';
+    if (link.colorClass.includes('black')) return darkMode ? 'bg-white text-black' : 'bg-black text-white shadow-slate-900/30';
+    if (link.colorClass.includes('indigo')) return 'bg-indigo-500 text-white shadow-indigo-500/30';
+    return darkMode ? 'bg-slate-700 text-slate-200' : 'bg-slate-100 text-slate-600';
   };
 
-  // Configuração de cores do ícone
-  const iconBgClass =
-    variant === "featured"
-      ? `bg-${link.colorClass} text-white shadow-xl shadow-${link.colorClass}/30`
-      : darkMode
-      ? "bg-slate-800 text-slate-200 group-hover:bg-slate-700"
-      : "bg-white text-slate-700 shadow-sm group-hover:scale-110";
+  // Estilos Base do Card (Glassmorphism)
+  const cardStyles = `
+    group relative overflow-hidden backdrop-blur-md border transition-all duration-300
+    ${darkMode 
+      ? 'bg-slate-900/60 border-slate-700/50 hover:bg-slate-800/80 hover:border-slate-600' 
+      : 'bg-white/70 border-white/60 hover:bg-white hover:border-white shadow-sm hover:shadow-xl hover:shadow-slate-200/50'}
+  `;
+
+  // Estilos Específicos por Variante
+  const variantStyles = {
+    list: `flex items-center justify-between w-full p-3 rounded-2xl`,
+    square: `flex flex-col items-center justify-center text-center p-6 h-full min-h-[160px] rounded-3xl`,
+    featured: `flex flex-col justify-between p-6 rounded-[2rem] h-full`
+  };
 
   return (
     <motion.a
       href={link.url}
       target="_blank"
       rel="noopener noreferrer"
-      className={`${baseStyles} ${variantStyles[variant]} ${className}`}
-      style={{ backgroundColor: cardBg, borderColor: borderColor }}
-      // --- A MÁGICA DA FÍSICA ---
-      whileHover={{
-        y: -5,
-        scale: 1.02,
-        backgroundColor: darkMode
-          ? "rgba(30, 41, 59, 0.9)"
-          : "rgba(255, 255, 255, 0.95)",
-        boxShadow: darkMode
-          ? "0 20px 40px -10px rgba(0,0,0,0.5)"
-          : "0 20px 40px -10px rgba(0,0,0,0.1)",
-      }}
-      whileTap={{ scale: 0.95 }}
+      className={`${cardStyles} ${variantStyles[variant]} ${className}`}
+      
+      // === FÍSICA DE MOLA (HOVER) ===
+      whileHover={{ y: -4, scale: 1.02 }}
+      whileTap={{ scale: 0.96 }}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ type: "spring", stiffness: 300, damping: 20 }}
+      transition={{ type: "spring", stiffness: 400, damping: 17 }}
     >
-      {/* Brilho no Hover (Featured) */}
-      {variant === "featured" && (
-        <div
-          className={`absolute -right-10 -top-10 w-40 h-40 bg-${link.colorClass} opacity-20 blur-3xl rounded-full group-hover:scale-150 transition-transform duration-700`}
-        />
+      {/* Brilho de Fundo (Glow) no Hover */}
+      <div className="absolute inset-0 bg-linear-to-tr from-transparent via-white/5 to-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+
+      {/* --- CONTEÚDO PARA VARIANTE 'SQUARE' (Insta/TikTok) --- */}
+      {variant === 'square' && (
+        <>
+          <motion.div 
+            className={`p-4 rounded-2xl shadow-lg mb-4 text-2xl ${getIconColorClass()}`}
+            whileHover={{ rotate: [0, -10, 10, 0] }} // Dancinha do ícone
+          >
+            {getIcon(link.icon)}
+          </motion.div>
+          
+          <h3 className={`font-bold text-lg mb-1 ${darkMode ? 'text-slate-100' : 'text-slate-800'}`}>
+            {link.title}
+          </h3>
+          
+          {link.cta && (
+            <span className={`text-xs font-medium px-2 py-1 rounded-full ${darkMode ? 'bg-slate-800 text-slate-400' : 'bg-slate-100 text-slate-500'}`}>
+              {link.cta}
+            </span>
+          )}
+        </>
       )}
 
-      {/* Ícone */}
-      <div
-        className={`
-        flex items-center justify-center rounded-2xl transition-all duration-300
-        ${variant === "list" ? "p-3 mr-4" : "p-4 mb-4 text-3xl"}
-        ${iconBgClass}
-      `}
-      >
-        {getIcon(link.icon)}
-      </div>
+      {/* --- CONTEÚDO PARA VARIANTE 'LIST' (Padrão) --- */}
+      {variant === 'list' && (
+        <>
+          <div className="flex items-center gap-4">
+            <div className={`p-2.5 rounded-xl shadow-md ${getIconColorClass()}`}>
+              {getIcon(link.icon)}
+            </div>
+            <div className="flex flex-col text-left">
+              <span className={`font-bold ${darkMode ? 'text-slate-100' : 'text-slate-800'}`}>
+                {link.title}
+              </span>
+              {link.cta && (
+                <span className={`text-xs ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+                  {link.cta}
+                </span>
+              )}
+            </div>
+          </div>
+        </>
+      )}
 
-      {/* Textos */}
-      <div
-        className={`z-10 flex-1 ${variant === "list" ? "text-left" : "w-full"}`}
-      >
-        <h3
-          className={`font-bold tracking-tight ${
-            darkMode ? "text-slate-100" : "text-slate-900"
-          } ${variant === "featured" ? "text-3xl" : "text-lg"}`}
-        >
-          {link.title}
-        </h3>
-
-        {link.cta && (
-          <p
-            className={`text-sm font-medium mt-1 ${
-              darkMode ? "text-slate-400" : "text-slate-500"
-            } ${variant === "featured" ? "text-base opacity-90" : ""}`}
-          >
-            {link.cta}
-          </p>
-        )}
-      </div>
-
-      {/* Botão de Copiar (Discreto) */}
+      {/* Botão de Copiar (Flutuante) */}
       <motion.button
         onClick={handleCopy}
-        whileHover={{ scale: 1.2, rotate: 10 }}
-        whileTap={{ scale: 0.8 }}
         className={`
-          z-20 p-2 rounded-full transition-colors
-          ${
-            variant === "list"
-              ? "opacity-0 group-hover:opacity-100"
-              : "absolute top-4 right-4 bg-black/5 dark:bg-white/10 opacity-0 group-hover:opacity-100"
-          }
+          absolute top-3 right-3 p-2 rounded-full transition-all
+          ${copied 
+            ? 'bg-green-500 text-white scale-100 opacity-100' 
+            : (darkMode ? 'bg-slate-800 text-slate-400 hover:text-white' : 'bg-slate-100 text-slate-400 hover:text-slate-700') + ' opacity-0 group-hover:opacity-100 scale-90 group-hover:scale-100'}
         `}
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
       >
         {copied ? (
-          <span className="text-green-500 font-bold">✓</span>
+          <span className="text-xs font-bold">✓</span>
         ) : (
-          <CopyIcon
-            className={`w-5 h-5 ${
-              darkMode ? "text-slate-400" : "text-slate-400"
-            }`}
-          />
+          <CopyIcon className="w-4 h-4" />
         )}
       </motion.button>
+
     </motion.a>
   );
 };
