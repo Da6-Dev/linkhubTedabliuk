@@ -30,10 +30,10 @@ const Mascot: React.FC<MascotProps> = ({ username }) => {
 
   // Inicializar o Viewer 3D
   useEffect(() => {
-    if (!canvasRef.current || !(window as any).skinview3d) return;
+    if (!canvasRef.current || !window.skinview3d) return;
 
     try {
-      const skinview3d = (window as any).skinview3d;
+      const skinview3d = window.skinview3d;
       
       // Cria o visualizador
       const viewer = new skinview3d.SkinViewer({
@@ -116,7 +116,7 @@ const Mascot: React.FC<MascotProps> = ({ username }) => {
       >
         <canvas 
           ref={canvasRef} 
-          className="w-[150px] h-[240px] drop-shadow-2xl filter"
+          className="w-150 h-240 drop-shadow-2xl filter"
           style={{ imageRendering: 'pixelated' }}
         />
         

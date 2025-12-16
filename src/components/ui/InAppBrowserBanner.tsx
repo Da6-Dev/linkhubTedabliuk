@@ -14,7 +14,7 @@ const InAppBrowserBanner: React.FC = () => {
       return;
     }
 
-    const ua = navigator.userAgent || navigator.vendor || (window as any).opera;
+    const ua = navigator.userAgent || navigator.vendor || window.opera;
     
     // Detect OS for specific instructions
     if (/iPad|iPhone|iPod/.test(ua)) setOsType('ios');
@@ -36,7 +36,7 @@ const InAppBrowserBanner: React.FC = () => {
   if (!isVisible) return null;
 
   return (
-    <div className="fixed inset-0 z-[9999] flex flex-col font-sans">
+    <div className="fixed inset-0 z-9999 flex flex-col font-sans">
       
       {/* 1. Background Blur Layer */}
       <div className="absolute inset-0 bg-slate-950/95 backdrop-blur-3xl z-0">
@@ -48,7 +48,7 @@ const InAppBrowserBanner: React.FC = () => {
       <div className="relative z-10 flex-1 flex flex-col px-6 py-8">
         
         {/* --- SETA INDICATIVA (PERSONALIZADA) --- */}
-        <div className="absolute top-4 right-6 flex flex-col items-center animate-bounce duration-[1500ms] z-50">
+        <div className="absolute top-4 right-6 flex flex-col items-center animate-bounce duration-1500 z-50">
           
           {/* Seta Girada em 60 Graus */}
           <svg 
@@ -60,7 +60,7 @@ const InAppBrowserBanner: React.FC = () => {
             strokeWidth="3" 
             strokeLinecap="round" 
             strokeLinejoin="round" 
-            className="rotate-[60deg] drop-shadow-[0_0_15px_rgba(45,212,191,0.6)]"
+            className="rotate-60 drop-shadow-[0_0_15px_rgba(45,212,191,0.6)]"
           >
             <path d="M12 19V5" />
             <path d="M5 12l7-7 7 7" />
@@ -97,7 +97,7 @@ const InAppBrowserBanner: React.FC = () => {
             <h1 className="text-3xl font-bold text-white mb-2 tracking-tight">
               Abra no Navegador
             </h1>
-            <p className="text-slate-400 text-lg leading-relaxed max-w-[280px] mx-auto">
+            <p className="text-slate-400 text-lg leading-relaxed max-w-280 mx-auto">
               Para fazer downloads e acessar o Discord, você precisa sair do modo restrito.
             </p>
           </div>
@@ -108,7 +108,7 @@ const InAppBrowserBanner: React.FC = () => {
                
                {/* Step 1 */}
                <div className="flex items-center gap-4">
-                 <div className="flex-shrink-0 w-10 h-10 rounded-full bg-slate-700/80 flex items-center justify-center border border-slate-600 font-bold text-slate-300">
+                 <div className="shrink-0 w-10 h-10 rounded-full bg-slate-700/80 flex items-center justify-center border border-slate-600 font-bold text-slate-300">
                    1
                  </div>
                  <div>
@@ -122,7 +122,7 @@ const InAppBrowserBanner: React.FC = () => {
 
                {/* Step 2 */}
                <div className="flex items-center gap-4">
-                 <div className="flex-shrink-0 w-10 h-10 rounded-full bg-teal-500 flex items-center justify-center shadow-[0_0_15px_rgba(20,184,166,0.4)] text-slate-900 font-bold">
+                 <div className="shrink-0 w-10 h-10 rounded-full bg-teal-500 flex items-center justify-center shadow-[0_0_15px_rgba(20,184,166,0.4)] text-slate-900 font-bold">
                    2
                  </div>
                  <div>
