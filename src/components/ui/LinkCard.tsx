@@ -1,7 +1,7 @@
 
 import React from 'react';
-import { SocialLink } from '../types';
-import { InstagramIcon, TikTokIcon, YoutubeIcon, DiscordIcon, TwitterIcon, LinkIcon, CopyIcon, DownloadIcon } from './Icons';
+import { SocialLink } from '../../types/types';
+import { InstagramIcon, TikTokIcon, YoutubeIcon, DiscordIcon, TwitterIcon, LinkIcon, CopyIcon, DownloadIcon } from '../widgets/Icons';
 
 interface LinkCardProps {
   link: SocialLink;

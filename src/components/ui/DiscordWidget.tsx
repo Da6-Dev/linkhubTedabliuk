@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import { DiscordIcon } from './Icons';
+import { DiscordIcon } from '../widgets/Icons';
 
 interface DiscordWidgetProps {
   serverId: string;

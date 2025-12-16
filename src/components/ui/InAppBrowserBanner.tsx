@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import { DownloadIcon, DiscordIcon } from './Icons';
+import { DownloadIcon, DiscordIcon } from '../widgets/Icons';
 
 const InAppBrowserBanner: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
