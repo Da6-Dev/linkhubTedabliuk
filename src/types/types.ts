@@ -12,6 +12,7 @@ export interface UserProfile {
   handle: string;
   bio: string;
   avatarUrl: string;
+  likes: number;
 }
 
 // === NOVOS TIPOS ===

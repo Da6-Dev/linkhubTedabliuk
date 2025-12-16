@@ -38,6 +38,7 @@ export const useData = () => {
             handle: profileData.handle,
             bio: profileData.bio,
             avatarUrl: profileData.avatar_url,
+            likes: profileData.likes_count || 0
           });
         }
 

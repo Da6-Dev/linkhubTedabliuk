@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { MapVersion } from "../../types/types";
 import { DownloadIcon } from "../widgets/Icons";
+import { useAnalytics } from '../../hooks/useAnalytics';
 
 interface DownloadSectionProps {
   versions: MapVersion[];
@@ -13,6 +14,7 @@ const DownloadSection: React.FC<DownloadSectionProps> = ({
 }) => {
   // Estado para controlar a aba ativa (Padrão: primeira versão da lista, geralmente Bedrock)
   const [activeTabId, setActiveTabId] = useState(versions[0]?.id);
+  const { trackDownload } = useAnalytics();
 
   // Encontra a versão ativa baseada no ID
   const activeVersion =
@@ -117,6 +119,7 @@ const DownloadSection: React.FC<DownloadSectionProps> = ({
                 key={index}
                 href={mirror.url}
                 target="_blank"
+                onClick={() => trackDownload(activeVersion.id)}
                 rel="noopener noreferrer"
                 className={`
                   group relative flex items-center justify-between p-4 rounded-2xl border transition-all duration-300 active:scale-[0.98]

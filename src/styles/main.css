@@ -75,3 +75,38 @@ html.dark {
 html {
   background-color: #f8fafc; /* slate-50 */
 }
+
+/* === SCROLLBAR PERSONALIZADA === */
+
+/* Largura da barra */
+::-webkit-scrollbar {
+  width: 10px; /* Um pouco mais grossa para ser fácil de clicar */
+}
+
+/* O fundo por onde a barra corre (o trilho) */
+::-webkit-scrollbar-track {
+  background: transparent; /* Transparente para parecer flutuante */
+  margin-block: 5px; /* Margemzinha no topo e fim */
+}
+
+/* A barra em si (o polegar) */
+::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1; /* Cor Cinza Suave (Light Mode) */
+  border-radius: 99px; /* Totalmente redonda */
+  border: 3px solid transparent; /* Truque para criar espaço entre a barra e a borda */
+  background-clip: content-box; /* Faz a cor respeitar a borda transparente */
+}
+
+/* Hover na barra (Light Mode) */
+::-webkit-scrollbar-thumb:hover {
+  background-color: #94a3b8;
+}
+
+/* === MODO ESCURO === */
+.dark ::-webkit-scrollbar-thumb {
+  background-color: #334155; /* Cor Slate Escuro */
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background-color: #475569;
+}

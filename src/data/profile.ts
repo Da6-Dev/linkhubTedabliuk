@@ -13,7 +13,8 @@ export const INITIAL_PROFILE: UserProfile = {
   name: "@TeDabliukk",
   handle: "Criador de Conteúdo",
   bio: BIO_OPTIONS[0], 
-  avatarUrl: "https://i.ibb.co/SDDy2fB6/Design-sem-nome-6.png", 
+  avatarUrl: "https://i.ibb.co/SDDy2fB6/Design-sem-nome-6.png",
+  likes: 0 
 };
 
 // Links Sociais

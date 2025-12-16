@@ -6,6 +6,7 @@ import LinkCard from "../components/ui/LinkCard";
 import YouTubeCard from "../components/ui/YouTubeCard";
 import DiscordWidget from "../components/ui/DiscordWidget";
 import { DownloadIcon } from "../components/widgets/Icons";
+import { Helmet } from "react-helmet-async";
 
 // Recebe os dados via props do App.tsx
 interface HomeProps {
@@ -23,6 +24,30 @@ const Home: React.FC<HomeProps> = ({
 }) => {
   const { profile, socialLinks } = data;
 
+  <Helmet>
+    {/* Título da Aba */}
+    <title>{profile.name} | Links Oficiais</title>
+
+    {/* Descrição para o Google */}
+    <meta name="description" content={profile.bio} />
+
+    {/* Facebook / Discord / WhatsApp (Open Graph) */}
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={window.location.href} />
+    <meta property="og:title" content={`${profile.name} - Baixe meus Mapas!`} />
+    <meta
+      property="og:description"
+      content="Acesse todos os meus links, redes sociais e downloads exclusivos do mundo Minecraft."
+    />
+    <meta property="og:image" content={profile.avatarUrl} />
+
+    {/* Twitter Card */}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={profile.name} />
+    <meta name="twitter:description" content={profile.bio} />
+    <meta name="twitter:image" content={profile.avatarUrl} />
+  </Helmet>;
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 flex-1 w-full max-w-6xl mx-auto p-4 md:p-0">
       {/* Lado Esquerdo: Perfil */}
@@ -34,7 +59,6 @@ const Home: React.FC<HomeProps> = ({
           shareText={shareFunctions.shareBtnText}
         />
       </div>
-
       {/* Lado Direito: Links */}
       <motion.section
         variants={variants.container}

@@ -1,168 +1,136 @@
-
-import React, { useEffect, useState } from 'react';
-import { DownloadIcon, DiscordIcon } from '../widgets/Icons';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const InAppBrowserBanner: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
-  const [, setOsType] = useState<'ios' | 'android' | 'other'>('other');
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
-    // Debug mode
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('debug_banner') === 'true') {
+    // Detecta navegadores "ruins" (In-App Browsers)
+    const userAgent = navigator.userAgent || navigator.vendor;
+    const isInApp = /Instagram|TikTok|LinkedIn|Snapchat/i.test(userAgent);
+    
+    // Só mostra se for in-app e se o usuário ainda não fechou antes
+    if (isInApp) {
       setIsVisible(true);
-      return;
-    }
-
-    const ua = navigator.userAgent || navigator.vendor || window.opera;
-    
-    // Detect OS for specific instructions
-    if (/iPad|iPhone|iPod/.test(ua)) setOsType('ios');
-    else if (/android/i.test(ua)) setOsType('android');
-
-    // Detection Logic
-    const isTikTok = /TikTok|Musical_ly|Bytedance/i.test(ua);
-    const isInstagram = /Instagram/i.test(ua);
-    const isFacebook = /FBAN|FBAV|FB_IAB/i.test(ua);
-    
-    // Android WebView check (generic)
-    const isAndroidWebView = /Android/i.test(ua) && /wv/i.test(ua);
-
-    if (isTikTok || isInstagram || isFacebook || isAndroidWebView) {
-      setTimeout(() => setIsVisible(true), 300);
     }
   }, []);
 
-  if (!isVisible) return null;
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(window.location.href);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleClose = () => {
+    setIsVisible(false);
+  };
 
   return (
-    <div className="fixed inset-0 z-9999 flex flex-col font-sans">
-      
-      {/* 1. Background Blur Layer */}
-      <div className="absolute inset-0 bg-slate-950/95 backdrop-blur-3xl z-0">
-        <div className="absolute top-0 right-0 w-80 h-80 bg-teal-500/20 rounded-full blur-[100px] animate-pulse"></div>
-        <div className="absolute bottom-0 left-0 w-80 h-80 bg-indigo-500/20 rounded-full blur-[100px]"></div>
-      </div>
-
-      {/* 2. Main Content Container */}
-      <div className="relative z-10 flex-1 flex flex-col px-6 py-8">
-        
-        {/* --- SETA INDICATIVA (PERSONALIZADA) --- */}
-        <div className="absolute top-4 right-6 flex flex-col items-center animate-bounce duration-1500 z-50">
+    <AnimatePresence>
+      {isVisible && (
+        <div className="fixed inset-0 z-100 flex items-center justify-center p-4">
           
-          {/* Seta Girada em 60 Graus */}
-          <svg 
-            width="64" 
-            height="64" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            stroke="#2dd4bf" 
-            strokeWidth="3" 
-            strokeLinecap="round" 
-            strokeLinejoin="round" 
-            className="rotate-60 drop-shadow-[0_0_15px_rgba(45,212,191,0.6)]"
+          {/* 1. FUNDO ESCURO (Backdrop) */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={handleClose}
+            className="absolute inset-0 bg-black/80 backdrop-blur-md"
+          />
+
+          {/* 2. O CARD FLUTUANTE */}
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0, y: 20 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            exit={{ scale: 0.9, opacity: 0, y: 20 }}
+            transition={{ type: "spring", stiffness: 300, damping: 25 }}
+            className="relative w-full max-w-sm bg-slate-900/90 border border-teal-500/30 rounded-4xl p-6 shadow-[0_0_50px_rgba(20,184,166,0.2)] overflow-hidden"
           >
-            <path d="M12 19V5" />
-            <path d="M5 12l7-7 7 7" />
-          </svg>
+            {/* Efeitos de Luz de Fundo */}
+            <div className="absolute -top-10 -right-10 w-32 h-32 bg-teal-500/20 rounded-full blur-3xl" />
+            <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-purple-500/20 rounded-full blur-3xl" />
 
-          {/* Texto Abaixo da Seta */}
-          <div className="mt-2 bg-slate-900/80 backdrop-blur-md text-white px-3 py-1.5 rounded-xl text-xs font-bold border border-teal-500/30 shadow-xl tracking-wide whitespace-nowrap">
-            Toque aqui ↗
-          </div>
-
-        </div>
-
-        {/* --- CONTEÚDO CENTRAL --- */}
-        <div className="flex-1 flex flex-col items-center justify-center text-center mt-12 space-y-8">
-          
-          {/* Icon Circle */}
-          <div className="relative">
-             <div className="absolute inset-0 bg-teal-400 blur-2xl opacity-20 rounded-full animate-pulse"></div>
-             <div className="w-20 h-20 bg-slate-900 border border-slate-700 rounded-2xl flex items-center justify-center shadow-2xl relative z-10">
-                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="12" cy="12" r="10"/>
-                  <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/>
-                  <path d="M2 12h20"/>
-                </svg>
-             </div>
-             {/* Badge de Alerta */}
-             <div className="absolute -top-2 -right-2 bg-yellow-500 text-slate-900 text-xs font-black px-2 py-0.5 rounded shadow-lg border border-slate-900 z-20">
-               !
-             </div>
-          </div>
-
-          {/* Titles */}
-          <div>
-            <h1 className="text-3xl font-bold text-white mb-2 tracking-tight">
-              Abra no Navegador
-            </h1>
-            <p className="text-slate-400 text-lg leading-relaxed max-w-280 mx-auto">
-              Para fazer downloads e acessar o Discord, você precisa sair do modo restrito.
-            </p>
-          </div>
-
-          {/* Instructions Card */}
-          <div className="w-full max-w-sm bg-slate-800/50 backdrop-blur-md border border-slate-700/50 rounded-2xl p-6 text-left shadow-xl">
-             <div className="flex flex-col gap-4">
-               
-               {/* Step 1 */}
-               <div className="flex items-center gap-4">
-                 <div className="shrink-0 w-10 h-10 rounded-full bg-slate-700/80 flex items-center justify-center border border-slate-600 font-bold text-slate-300">
-                   1
-                 </div>
-                 <div>
-                   <p className="text-white font-medium text-base">
-                     Encontre as opções no canto superior direito
-                   </p>
-                 </div>
-               </div>
-
-               <div className="w-0.5 h-6 bg-slate-700 ml-5"></div>
-
-               {/* Step 2 */}
-               <div className="flex items-center gap-4">
-                 <div className="shrink-0 w-10 h-10 rounded-full bg-teal-500 flex items-center justify-center shadow-[0_0_15px_rgba(20,184,166,0.4)] text-slate-900 font-bold">
-                   2
-                 </div>
-                 <div>
-                   <p className="text-white font-medium text-base">
-                     Selecione <br/>
-                     <span className="text-teal-400 font-bold text-lg">Abrir no Navegador</span>
-                   </p>
-                 </div>
-               </div>
-
-             </div>
-          </div>
-
-          {/* Preview do que está perdendo (Botões Bloqueados Visualmente) */}
-          <div className="w-full max-w-sm opacity-50 grayscale pointer-events-none scale-95 mt-4">
-             <div className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-2 text-center">Conteúdo Bloqueado</div>
-             <div className="flex gap-2">
-                <div className="flex-1 bg-slate-800 p-3 rounded-lg border border-slate-700 flex items-center justify-center gap-2">
-                  <DownloadIcon className="w-4 h-4" /> <span className="text-xs font-bold">Mapas</span>
+            {/* Ícone de Alerta Animado */}
+            <div className="flex justify-center mb-6">
+              <motion.div 
+                animate={{ y: [0, -10, 0] }}
+                transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+                className="relative"
+              >
+                <div className="w-20 h-20 bg-linear-to-tr from-teal-400 to-emerald-500 rounded-full flex items-center justify-center shadow-lg shadow-teal-500/30">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                  </svg>
                 </div>
-                <div className="flex-1 bg-slate-800 p-3 rounded-lg border border-slate-700 flex items-center justify-center gap-2">
-                  <DiscordIcon className="w-4 h-4" /> <span className="text-xs font-bold">Discord</span>
-                </div>
-             </div>
-          </div>
+                {/* Ondas de alerta */}
+                <div className="absolute inset-0 border-2 border-teal-500/50 rounded-full animate-ping" />
+              </motion.div>
+            </div>
 
+            {/* Texto */}
+            <div className="text-center space-y-3 relative z-10">
+              <h2 className="text-2xl font-black text-white">
+                Navegador Limitado!
+              </h2>
+              <p className="text-slate-300 text-sm leading-relaxed">
+                Você está usando o navegador do TikTok/Insta. 
+                <br />
+                <span className="text-teal-400 font-bold">Downloads e Mapas podem falhar.</span>
+              </p>
+            </div>
+
+            {/* Instrução Visual */}
+            <div className="mt-6 bg-black/40 rounded-xl p-4 border border-white/5 relative z-10">
+              <div className="flex items-center gap-3 text-sm text-slate-300 mb-3">
+                <span className="w-6 h-6 flex items-center justify-center bg-slate-700 rounded-full text-xs font-bold shrink-0">1</span>
+                <span>Clique nos <span className="font-bold text-white">3 pontinhos</span> (•••)</span>
+              </div>
+              <div className="flex items-center gap-3 text-sm text-slate-300">
+                <span className="w-6 h-6 flex items-center justify-center bg-slate-700 rounded-full text-xs font-bold shrink-0">2</span>
+                <span>Escolha <span className="font-bold text-white">Abrir no Chrome/Safari</span></span>
+              </div>
+            </div>
+
+            {/* Botões de Ação */}
+            <div className="mt-6 flex flex-col gap-3 relative z-10">
+              
+              {/* Botão Copiar Link (Alternativa Inteligente) */}
+              <button
+                onClick={handleCopyLink}
+                className={`
+                  w-full py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 transition-all
+                  ${copied 
+                    ? 'bg-green-500 text-white shadow-lg shadow-green-500/20' 
+                    : 'bg-white text-slate-900 hover:bg-slate-200 shadow-lg'}
+                `}
+              >
+                {copied ? (
+                  <>Copiado! ✓</>
+                ) : (
+                  <>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                    </svg>
+                    Copiar Link
+                  </>
+                )}
+              </button>
+
+              {/* Botão Fechar (Discreto) */}
+              <button
+                onClick={handleClose}
+                className="w-full py-3 text-slate-400 text-sm font-medium hover:text-white transition-colors"
+              >
+                Continuar assim mesmo (risco de erro)
+              </button>
+            </div>
+
+          </motion.div>
         </div>
-
-        {/* Footer Link */}
-        <div className="mt-auto pt-6 pb-2 text-center">
-          <button 
-            onClick={() => setIsVisible(false)}
-            className="text-slate-500 text-sm hover:text-white transition-colors underline decoration-slate-700 underline-offset-4"
-          >
-            Tentar navegar assim mesmo
-          </button>
-        </div>
-
-      </div>
-    </div>
+      )}
+    </AnimatePresence>
   );
 };
 
