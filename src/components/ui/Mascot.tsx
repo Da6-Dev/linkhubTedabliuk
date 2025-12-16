@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
+import * as skinview3d from 'skinview3d';
 
 interface MascotProps {
   username: string; // Nick do Minecraft
@@ -30,31 +31,27 @@ const Mascot: React.FC<MascotProps> = ({ username }) => {
 
   // Inicializar o Viewer 3D
   useEffect(() => {
-    if (!canvasRef.current || !window.skinview3d) return;
+    if (!canvasRef.current) return;
 
     try {
-      const skinview3d = window.skinview3d;
-      
-      // Cria o visualizador
+      // Cria o visualizador usando a biblioteca importada
       const viewer = new skinview3d.SkinViewer({
         canvas: canvasRef.current,
-        width: 150, // Tamanho interno de renderização
+        width: 150,
         height: 240,
         skin: `https://mineskin.eu/skin/${username}`,
-        alpha: true, // Fundo transparente
       });
 
       // Configurações iniciais
-      viewer.camera.position.x = 20; // Leve ângulo
+      viewer.camera.position.x = 20;
       viewer.camera.position.y = 10;
       viewer.camera.position.z = 40;
       viewer.zoom = 0.9;
       
-      // Animação inicial: Idle (Respirando)
+      // Animação inicial
       viewer.animation = new skinview3d.IdleAnimation();
       viewer.animation.speed = 0.8;
 
-      // Habilitar controles do mouse (rotação)
       viewer.controls.enableZoom = false;
       viewer.controls.enableRotate = true;
       viewer.controls.enablePan = false;
@@ -78,17 +75,17 @@ const Mascot: React.FC<MascotProps> = ({ username }) => {
   const handleMouseEnter = () => {
     setIsHovered(true);
     changePhrase();
-    // Muda animação para "Andando" quando passa o mouse
-    if (viewerRef.current && (window as any).skinview3d) {
-      viewerRef.current.animation = new (window as any).skinview3d.WalkingAnimation();
+    // Usa skinview3d importado
+    if (viewerRef.current) {
+      viewerRef.current.animation = new skinview3d.WalkingAnimation();
     }
   };
 
   const handleMouseLeave = () => {
     setIsHovered(false);
-    // Volta para animação Idle
-    if (viewerRef.current && (window as any).skinview3d) {
-      viewerRef.current.animation = new (window as any).skinview3d.IdleAnimation();
+    // Usa skinview3d importado
+    if (viewerRef.current) {
+      viewerRef.current.animation = new skinview3d.IdleAnimation();
     }
   };
 

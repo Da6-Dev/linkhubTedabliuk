@@ -77,11 +77,15 @@ const DiscordWidget: React.FC<DiscordWidgetProps> = ({
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-400"></span>
                 </span>
-                <span className="text-xs font-medium text-indigo-100 uppercase tracking-wide">
-                  {loading
-                    ? "Carregando..."
-                    : `${data?.presence_count || 0} Online`}
-                </span>
+                <div className="text-xs font-medium text-indigo-100 uppercase tracking-wide h-4 flex items-center">
+                  {loading ? (
+                    /* Skeleton Loader: Retângulo pulsante */
+                    <div className="h-3 w-24 bg-indigo-300/40 rounded animate-pulse" />
+                  ) : (
+                    /* Conteúdo Real */
+                    `${data?.presence_count || 0} Online`
+                  )}
+                </div>
               </div>
             </div>
           </div>
