@@ -1,5 +1,4 @@
 import React, { useState, useEffect, Suspense, lazy } from "react";
-import { UserProfile, SocialLink } from "./types/types";
 import LinkCard from "./components/ui/LinkCard";
 import DiscordWidget from "./components/ui/DiscordWidget";
 import InAppBrowserBanner from "./components/ui/InAppBrowserBanner";
@@ -10,16 +9,10 @@ import WorldGuide from "./components/ui/WorldGuide";
 import ProfileHero from "./components/ui/ProfileHero";
 import { motion, Variants } from "framer-motion";
 import YouTubeCard from "./components/ui/YouTubeCard";
+import { useData } from "./hooks/useData";
+import { DISCORD_CONFIG } from './data/profile';
 const Mascot = lazy(() => import("./components/ui/Mascot"));
 import { SunIcon, MoonIcon } from "./components/widgets/Icons";
-import {
-  BIO_OPTIONS,
-  INITIAL_PROFILE,
-  INITIAL_SOCIAL_LINKS,
-  MAP_VERSIONS,
-  WORLD_LOCATIONS,
-  DISCORD_CONFIG,
-} from "./data/profile";
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
@@ -40,97 +33,55 @@ const itemVariants: Variants = {
 };
 
 const App: React.FC = () => {
-  const [profile, setProfile] = useState<UserProfile>(INITIAL_PROFILE);
-  const [socialLinks] = useState<SocialLink[]>(INITIAL_SOCIAL_LINKS);
+  // 1. Hook que traz os dados do Banco de Dados
+  const { profile, socialLinks, mapVersions, locations, loading } = useData();
+
+  // 2. Estados de Interface (UI)
+  const [darkMode, setDarkMode] = useState(true);
   const [shareBtnText, setShareBtnText] = useState("Compartilhar");
-  const [isSharing, setIsSharing] = useState(false);
+  const [isSharing, setIsSharing] = useState(false); // <--- Adicionamos isso que faltava
 
-  // Theme State
-  const [darkMode, setDarkMode] = useState(false);
-
-  // Random Bio Logic
+  // 3. Efeito de Inicialização (Tema e View Transitions)
   useEffect(() => {
-    const randomIndex = Math.floor(Math.random() * BIO_OPTIONS.length);
-    setProfile((prev) => ({ ...prev, bio: BIO_OPTIONS[randomIndex] }));
+    document.documentElement.classList.add("dark");
   }, []);
 
-  const toggleTheme = (e: React.MouseEvent<HTMLButtonElement>) => {
-    // Verifica se o navegador suporta View Transitions
+  const toggleTheme = () => {
     if (!document.startViewTransition) {
       setDarkMode(!darkMode);
+      document.documentElement.classList.toggle("dark");
       return;
     }
-
-    const x = e.clientX;
-    const y = e.clientY;
-
-    // Calcula a distância até o canto mais distante para o círculo cobrir tudo
-    const endRadius = Math.hypot(
-      Math.max(x, window.innerWidth - x),
-      Math.max(y, window.innerHeight - y)
-    );
-
-    // Inicia a transição
-    const transition = document.startViewTransition(() => {
+    document.startViewTransition(() => {
       setDarkMode(!darkMode);
-    });
-
-    // Anima o clip-path quando a transição estiver pronta
-    transition.ready.then(() => {
-      const clipPath = [
-        `circle(0px at ${x}px ${y}px)`,
-        `circle(${endRadius}px at ${x}px ${y}px)`,
-      ];
-
-      // Animação Simplificada:
-      // Sempre anima a "nova" view crescendo sobre a antiga.
-      // Isso garante que a animação funcione visualmente em ambas as direções (Dark->Light e Light->Dark)
-      document.documentElement.animate(
-        {
-          clipPath: clipPath,
-        },
-        {
-          duration: 500,
-          easing: "ease-in-out",
-          pseudoElement: "::view-transition-new(root)",
-        }
-      );
+      document.documentElement.classList.toggle("dark");
     });
   };
 
+  // 4. Função de Compartilhar
   const shareProfile = async () => {
     if (isSharing) return;
     setIsSharing(true);
 
-    const shareData = {
-      title: profile.name,
-      text: profile.bio,
-      url: window.location.href,
-    };
-
-    const copyToClipboard = async () => {
-      try {
-        await navigator.clipboard.writeText(window.location.href);
-        setShareBtnText("Copiado!");
-        setTimeout(() => setShareBtnText("Compartilhar"), 2000);
-      } catch (err) {
-        setShareBtnText("Erro ao copiar");
-        setTimeout(() => setShareBtnText("Compartilhar"), 2000);
-      }
-    };
-
     try {
-      if (navigator.share) {
-        await navigator.share(shareData);
-      } else {
-        await copyToClipboard();
-      }
-    } catch (error: any) {
-      await copyToClipboard();
+      await navigator.clipboard.writeText(window.location.href);
+      setShareBtnText("Copiado!");
+      setTimeout(() => setShareBtnText("Compartilhar"), 2000);
+    } catch (err) {
+      console.error("Falha ao copiar", err);
     } finally {
       setIsSharing(false);
     }
   };
+
+  // 5. Se estiver carregando, mostra algo simples (opcional)
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-900 text-teal-500">
+        <div className="animate-spin h-8 w-8 border-4 border-teal-500 rounded-full border-t-transparent"></div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -227,12 +178,12 @@ const App: React.FC = () => {
 
             {/* Downloads Modernos */}
             <motion.div variants={itemVariants}>
-              <DownloadSection versions={MAP_VERSIONS} darkMode={darkMode} />
+              <DownloadSection versions={mapVersions} darkMode={darkMode} />
             </motion.div>
 
             {/* Guia de Mundos */}
             <motion.div variants={itemVariants}>
-              <WorldGuide locations={WORLD_LOCATIONS} darkMode={darkMode} />
+              <WorldGuide locations={locations} darkMode={darkMode} />
             </motion.div>
 
             {/* Discord */}
