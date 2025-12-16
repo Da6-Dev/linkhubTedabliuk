@@ -1,4 +1,5 @@
 import React from "react";
+import { motion } from "framer-motion"; // <--- O SEGREDO
 import { SocialLink } from "../../types/types";
 import {
   InstagramIcon,
@@ -53,166 +54,125 @@ const LinkCard: React.FC<LinkCardProps> = ({
     setTimeout(() => setCopied(false), 2000);
   };
 
-  // Base styles shared by all variants
-  // Adaptive colors for Dark/Light mode
+  // Cores dinâmicas baseadas no modo escuro
+  const cardBg = darkMode
+    ? "rgba(30, 41, 59, 0.6)"
+    : "rgba(255, 255, 255, 0.7)";
+
+  const borderColor = darkMode
+    ? "rgba(51, 65, 85, 0.5)"
+    : "rgba(255, 255, 255, 0.8)";
+
+  // Estilos base
   const baseStyles = `
-    group relative flex overflow-hidden
-    ${
-      darkMode
-        ? "bg-slate-800/50 hover:bg-slate-800 border-slate-700 hover:border-slate-600 shadow-none"
-        : "bg-gradient-to-br from-white via-white to-slate-50 border-slate-200/60 hover:to-white hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)]"
-    }
-    border
-    transition-all duration-300 ease-[cubic-bezier(0.25,0.1,0.25,1)]
-    hover:-translate-y-1.5
-    active:scale-[0.98] active:shadow-sm
+    group relative flex overflow-hidden backdrop-blur-md border
     cursor-pointer
-    backdrop-blur-sm
   `;
 
-  // Specific styles for variants
+  // Variantes de Layout
   const variantStyles = {
-    list: `
-      items-center justify-between w-full p-4 rounded-2xl
-    `,
-    square: `
-      flex-col items-center justify-center p-6 text-center rounded-3xl
-    `,
-    featured: `
-      flex-col justify-between p-6 md:p-8 rounded-3xl h-full min-h-[160px]
-      ${
-        darkMode
-          ? "bg-gradient-to-br from-slate-800 to-slate-900"
-          : "bg-gradient-to-br from-white to-slate-100/50"
-      }
-    `,
+    list: `items-center justify-between w-full p-4 rounded-2xl`,
+    square: `flex-col items-center justify-center p-6 text-center rounded-3xl aspect-square md:aspect-auto`,
+    featured: `flex-col justify-between p-6 md:p-8 rounded-[2rem] h-full min-h-[180px]`,
   };
 
-  // Icon container styles
-  const iconContainerStyles = `
-    flex items-center justify-center rounded-xl transition-all duration-300 transform group-hover:scale-110 group-hover:rotate-3
-    ${
-      variant === "square"
-        ? darkMode
-          ? "p-3.5 mb-4 bg-slate-700 ring-1 ring-slate-600 text-slate-200"
-          : "p-3.5 mb-4 bg-white shadow-sm ring-1 ring-slate-100 text-slate-700"
-        : ""
-    }
-    ${
-      variant === "list"
-        ? darkMode
-          ? `p-3 bg-slate-700 text-slate-300 group-hover:bg-${link.colorClass} group-hover:text-white`
-          : `p-3 bg-slate-50 text-slate-600 group-hover:bg-${link.colorClass} group-hover:text-white group-hover:shadow-lg group-hover:shadow-${link.colorClass}/30`
-        : ""
-    }
-    ${
-      variant === "featured"
-        ? `w-14 h-14 bg-${link.colorClass} text-white mb-auto shadow-xl shadow-${link.colorClass}/20`
-        : ""
-    }
-  `;
-
-  const textColorMain = darkMode ? "text-slate-100" : "text-slate-800";
-  const textColorSub = darkMode ? "text-slate-400" : "text-slate-500";
+  // Configuração de cores do ícone
+  const iconBgClass =
+    variant === "featured"
+      ? `bg-${link.colorClass} text-white shadow-xl shadow-${link.colorClass}/30`
+      : darkMode
+      ? "bg-slate-800 text-slate-200 group-hover:bg-slate-700"
+      : "bg-white text-slate-700 shadow-sm group-hover:scale-110";
 
   return (
-    <a
+    <motion.a
       href={link.url}
       target="_blank"
       rel="noopener noreferrer"
       className={`${baseStyles} ${variantStyles[variant]} ${className}`}
+      style={{ backgroundColor: cardBg, borderColor: borderColor }}
+      // --- A MÁGICA DA FÍSICA ---
+      whileHover={{
+        y: -5,
+        scale: 1.02,
+        backgroundColor: darkMode
+          ? "rgba(30, 41, 59, 0.9)"
+          : "rgba(255, 255, 255, 0.95)",
+        boxShadow: darkMode
+          ? "0 20px 40px -10px rgba(0,0,0,0.5)"
+          : "0 20px 40px -10px rgba(0,0,0,0.1)",
+      }}
+      whileTap={{ scale: 0.95 }}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ type: "spring", stiffness: 300, damping: 20 }}
     >
-      {/* Background decoration for featured */}
+      {/* Brilho no Hover (Featured) */}
       {variant === "featured" && (
         <div
-          className={`absolute top-0 right-0 w-40 h-40 bg-${link.colorClass} opacity-[0.03] rounded-bl-full -mr-10 -mt-10 transition-all duration-500 group-hover:scale-110 group-hover:opacity-10`}
+          className={`absolute -right-10 -top-10 w-40 h-40 bg-${link.colorClass} opacity-20 blur-3xl rounded-full group-hover:scale-150 transition-transform duration-700`}
         />
       )}
 
-      {/* Icon */}
-      <div className={iconContainerStyles}>{getIcon(link.icon)}</div>
-
-      {/* Text Content */}
+      {/* Ícone */}
       <div
-        className={`z-10 transition-transform duration-300 ${
-          variant === "list"
-            ? "flex-1 ml-4 text-left group-hover:translate-x-1"
-            : "w-full"
-        }`}
+        className={`
+        flex items-center justify-center rounded-2xl transition-all duration-300
+        ${variant === "list" ? "p-3 mr-4" : "p-4 mb-4 text-3xl"}
+        ${iconBgClass}
+      `}
       >
-        <span
-          className={`
-          block transition-colors ${textColorMain} group-hover:text-current
-          ${
-            variant === "featured"
-              ? "text-3xl font-extrabold tracking-tighter mt-4"
-              : ""
-          }
-          ${variant === "square" ? "text-xl font-bold tracking-tight" : ""}
-          ${variant === "list" ? "text-lg font-bold tracking-tight" : ""}
-        `}
+        {getIcon(link.icon)}
+      </div>
+
+      {/* Textos */}
+      <div
+        className={`z-10 flex-1 ${variant === "list" ? "text-left" : "w-full"}`}
+      >
+        <h3
+          className={`font-bold tracking-tight ${
+            darkMode ? "text-slate-100" : "text-slate-900"
+          } ${variant === "featured" ? "text-3xl" : "text-lg"}`}
         >
           {link.title}
-        </span>
+        </h3>
 
-        {/* CTA / Subtext */}
         {link.cta && (
-          <span
-            className={`
-            block transition-colors group-hover:text-slate-500
-            ${textColorSub}
-            ${
-              variant === "featured"
-                ? "text-lg font-medium mt-1 leading-snug"
-                : ""
-            }
-            ${
-              variant === "square"
-                ? "text-xs font-bold uppercase tracking-wider mt-1.5"
-                : ""
-            }
-            ${variant === "list" ? "text-sm font-medium mt-0.5" : ""}
-          `}
+          <p
+            className={`text-sm font-medium mt-1 ${
+              darkMode ? "text-slate-400" : "text-slate-500"
+            } ${variant === "featured" ? "text-base opacity-90" : ""}`}
           >
             {link.cta}
-          </span>
-        )}
-
-        {variant === "featured" && !link.cta && (
-          <span
-            className={`text-sm ${textColorSub} font-bold mt-2 flex items-center gap-1`}
-          >
-            Ver canal{" "}
-            <span className="group-hover:translate-x-1 transition-transform">
-              →
-            </span>
-          </span>
+          </p>
         )}
       </div>
 
-      {/* Copy Button */}
-      <button
+      {/* Botão de Copiar (Discreto) */}
+      <motion.button
         onClick={handleCopy}
+        whileHover={{ scale: 1.2, rotate: 10 }}
+        whileTap={{ scale: 0.8 }}
         className={`
-          z-20 hover:text-green-500 transition-all duration-300
-          ${darkMode ? "text-slate-500" : "text-slate-300"}
+          z-20 p-2 rounded-full transition-colors
           ${
             variant === "list"
-              ? "p-2 opacity-0 group-hover:opacity-100 hover:scale-110"
-              : "absolute top-4 right-4 p-2 bg-white/10 backdrop-blur rounded-full opacity-0 group-hover:opacity-100 hover:scale-110 shadow-sm"
+              ? "opacity-0 group-hover:opacity-100"
+              : "absolute top-4 right-4 bg-black/5 dark:bg-white/10 opacity-0 group-hover:opacity-100"
           }
         `}
-        title="Copiar Link"
       >
         {copied ? (
-          <span className="text-xs font-bold text-green-500 animate-pulse">
-            ✓
-          </span>
+          <span className="text-green-500 font-bold">✓</span>
         ) : (
-          <CopyIcon className="w-5 h-5" />
+          <CopyIcon
+            className={`w-5 h-5 ${
+              darkMode ? "text-slate-400" : "text-slate-400"
+            }`}
+          />
         )}
-      </button>
-    </a>
+      </motion.button>
+    </motion.a>
   );
 };
 

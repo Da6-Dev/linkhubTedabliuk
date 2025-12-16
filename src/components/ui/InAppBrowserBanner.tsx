@@ -4,7 +4,7 @@ import { DownloadIcon, DiscordIcon } from '../widgets/Icons';
 
 const InAppBrowserBanner: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
-  const [osType, setOsType] = useState<'ios' | 'android' | 'other'>('other');
+  const [, setOsType] = useState<'ios' | 'android' | 'other'>('other');
 
   useEffect(() => {
     // Debug mode

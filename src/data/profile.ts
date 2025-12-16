@@ -1,4 +1,4 @@
-import { UserProfile, SocialLink } from '../types/types';
+import { UserProfile, SocialLink, MapVersion, WorldLocation } from '../types/types';
 
 // Opções de Bio para Rotação
 export const BIO_OPTIONS = [
@@ -44,28 +44,55 @@ export const INITIAL_SOCIAL_LINKS: SocialLink[] = [
   },
 ];
 
-// Links de Download
-export const DOWNLOAD_LINKS: SocialLink[] = [
-  { 
-    id: '4', 
-    title: 'Baixar Mundo (Bedrock)', 
-    url: 'https://drive.google.com/file/d/1gJu1o0ZlwIfN2z6NbQc2fYwJd3yWc_jD/view?usp=sharing', 
-    icon: 'download', 
-    colorClass: 'emerald-600',
-    cta: 'Para Celular/Console'
-  },
-  { 
-    id: '5', 
-    title: 'Baixar Mundo (Java)', 
-    url: 'https://drive.google.com/file/d/1PJ6VMg4SPUI1s8emKCJU7c2z4b8G3LBD/view?usp=drive_link', 
-    icon: 'download', 
-    colorClass: 'indigo-600',
-    cta: 'Versão para PC'
-  },
-];
-
 // Configuração do Discord (Extra: para organizar tudo mesmo)
 export const DISCORD_CONFIG = {
   serverId: "1334855536700686388",
   inviteUrl: "https://discord.gg/W9MmqNgEBP"
 };
+
+export const MAP_VERSIONS: MapVersion[] = [
+  {
+    id: 'bedrock',
+    title: 'Mundo Bedrock (Celular/Console)',
+    description: '.mcworld - Instalação automática',
+    mirrors: [
+      { name: 'Opção 1 (Google Drive)', url: 'SEU_LINK_DRIVE_AQUI' },
+      { name: 'Opção 2 (MediaFire)', url: 'SEU_LINK_MEDIAFIRE_AQUI' }, // Crie conta no MediaFire (grátis)
+      { name: 'Opção 3 (Mega)', url: 'SEU_LINK_MEGA_AQUI' },
+    ]
+  },
+  {
+    id: 'java',
+    title: 'Mundo Java (PC)',
+    description: '.zip - Extrair na pasta saves',
+    mirrors: [
+      { name: 'Opção 1 (Google Drive)', url: 'SEU_LINK_DRIVE_AQUI' },
+      { name: 'Opção 2 (MediaFire)', url: 'SEU_LINK_MEDIAFIRE_AQUI' },
+    ]
+  }
+];
+
+// === DADOS DO GUIA DE CONSTRUÇÕES ===
+export const WORLD_LOCATIONS: WorldLocation[] = [
+  {
+    id: '1',
+    name: 'Mansão Moderna',
+    description: 'A casa principal onde comecei a série. Tem piscina e redstone.',
+    imageUrl: 'https://i.ibb.co/vzwdZC0/exemplo-casa.jpg', // Troque por prints reais do seu mapa
+    coordinateCommand: '/tp @s 120 70 -350'
+  },
+  {
+    id: '2',
+    name: 'Farm de Ferro',
+    description: 'Fica no subsolo, perto da vila dos villagers.',
+    imageUrl: 'https://i.ibb.co/vzwdZC0/exemplo-farm.jpg',
+    coordinateCommand: '/tp @s 500 12 100'
+  },
+  {
+    id: '3',
+    name: 'Arena PvP',
+    description: 'Área isolada para batalhas com mobs ou amigos.',
+    imageUrl: 'https://i.ibb.co/vzwdZC0/exemplo-arena.jpg',
+    coordinateCommand: '/tp @s -1000 64 500'
+  }
+];
