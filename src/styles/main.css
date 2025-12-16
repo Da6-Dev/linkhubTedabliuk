@@ -65,3 +65,13 @@
   backdrop-filter: none !important;
 }
 
+html, body {
+  overscroll-behavior-y: none; /* Impede aquele efeito elástico do navegador */
+}
+
+html.dark {
+  background-color: #020617; /* slate-950 */
+}
+html {
+  background-color: #f8fafc; /* slate-50 */
+}

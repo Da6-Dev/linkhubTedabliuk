@@ -5,10 +5,12 @@ import { Variants } from "framer-motion";
 // Componentes Globais
 import InAppBrowserBanner from "./components/ui/InAppBrowserBanner";
 import { SunIcon, MoonIcon } from "./components/widgets/Icons";
+import { HomeSkeleton } from "./components/ui/Skeleton";
 
 // Páginas
 import Home from "./pages/Home";
 import Downloads from "./pages/Downloads";
+import NotFound from "./pages/NotFound";
 
 // Dados
 import { useData } from "./hooks/useData";
@@ -105,8 +107,20 @@ const App: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-900 text-teal-500">
-        <div className="animate-spin h-8 w-8 border-4 border-teal-500 rounded-full border-t-transparent"></div>
+      <div
+        className={`min-h-screen transition-colors duration-500 py-8 px-4 md:py-12 ${
+          darkMode ? "bg-slate-950" : "bg-slate-50"
+        }`}
+      >
+        {/* Mantém o Banner e o Botão de Tema visíveis mesmo carregando */}
+        <div className="flex justify-end mb-8 pr-4">
+          <div
+            className={`w-10 h-10 rounded-full ${
+              darkMode ? "bg-slate-800" : "bg-slate-200"
+            } animate-pulse`}
+          />
+        </div>
+        <HomeSkeleton darkMode={darkMode} />
       </div>
     );
   }
@@ -181,6 +195,7 @@ const App: React.FC = () => {
                 />
               }
             />
+            <Route path="*" element={<NotFound darkMode={darkMode} />} />
           </Routes>
         </main>
 
