@@ -41,3 +41,27 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
 }
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  /* Desativa a animação padrão de fade do navegador */
+  animation: none;
+  /* Garante que as cores não se misturem estranhamente */
+  mix-blend-mode: normal;
+  /* SEGREDOS DE PERFORMANCE MOBILE: */
+  will-change: clip-path; /* Avisa a GPU que o recorte vai mudar */
+  contain: paint; /* Otimiza a renderização */
+  overflow: hidden;
+}
+
+/* Garante que a imagem nova fique no topo e isolada */
+::view-transition-image-pair(root) {
+  isolation: isolate;
+}
+
+/* Opcional: Se ainda estiver travando muito, desabilite o blur DURANTE a transição */
+/* Isso pode ajudar em celulares muito fracos */
+::view-transition-group(root) {
+  backdrop-filter: none !important;
+}
+
